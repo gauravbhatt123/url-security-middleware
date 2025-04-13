@@ -99,17 +99,29 @@ void receiveReq(){
     //Here i store all the ip of client which are connected to the socket right now for the future response
     int connected_socketId_array[MAX_THREAD];
     int i =0;
-    while(sizeof(semaphore) < MAX_THREAD){
-        clear(client_address);
+    while(i < MAX_THREAD){
+        memset(&client_address, 0, sizeof(client_address));
         client_length = sizeof(client_address);
-        client_socketid = accept(proxy_socketid, (const struct sockaddr *)&client_address, (socklen_t*)&client_length); //client address
+        client_socketid = accept(proxy_socketid, (const struct sockaddr *)&client_address, (socklen_t*)&client_length); //acceptiing request and Returns a new socket file descriptor 
         if(client_socketid == -1){
             printf("Socket not responding\n");
             exit(1);
         }
         connected_socketId_array[i++] = client_socketid;
-        
     }
+
+    struct sockaddr_in *client_pt = (struct sockaddr_in *)&client_address;
+    struct in_addr ip_addr = client_pt-> sin_addr; //client ip address (raw format)
+    char str[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &ip_addr, str, INET6_ADDRSTRLEN); //convert ip address to presentable format
+    /* This  function converts the network address structure src in the af address family into a character string.  The resulting string is copied to the buffer pointed to by dst, which must be a non-null pointer.  The caller specifies
+   the number of bytes available in this buffer in the argument size.
+
+    inet_ntop() extends the inet_ntoa(3) function to support multiple address families, inet_ntoa(3) is now considered to be deprecated in favor of inet_ntop().
+    */
+
+    printf("Client is connected with the tcp port %d and ip address of client is %s\n", ntohs(client_address.sin_port), str);
+
 
 
 }
