@@ -17,7 +17,7 @@ Build a fully functional multithreaded HTTP proxy in C, with:
 - [ ] Make cache/thread count configurable via CLI or config file.
 
 ## SYSTEM ARCHITECTURE
-![Arch](arch.png)
+![Arch](Arch.png)
 
 
 ### 🔧 Technologies Used
