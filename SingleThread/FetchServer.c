@@ -10,11 +10,11 @@
 
 
 /*
-        this function takes a http response and sends a http response
+        this function takes a hostname and path and sends a http response
         that the server will send us from the original request
 */ 
 
-void FetchRes(char * req,int reqsize,char ** res,int * ressize){
+void FetchResServer(const char * host,const char * path,char ** res,int * ressize){
 
         /*
                 a http GET request is of this format 
@@ -24,36 +24,8 @@ void FetchRes(char * req,int reqsize,char ** res,int * ressize){
                 .................
                 ..............
         */
-        char httpMethord[16] , url[256] , protocol[16];
-        // extract the important stuff from the first line
 
-        if(sscanf(req,"%s %s %s",httpMethord,url,protocol)!=3){
-                fprintf(stderr, "Invalid request format\n");
-                return;
-        }
-        // check if it is a get request or not 
-        if(strcmp(httpMethord,"GET")!=0){
-                fprintf(stderr, "Only GET requests are supported\n");
-                return;
-        }
-
-        /*
-                the request path is like 
-                http://idk.com/path
-        */
-        char host[256] , path[256] = "/";
-
-        // check if the request has http:// in , it need to skip it 
-        if (strncmp(url, "http://", 7) == 0)  
-                sscanf(url + 7, "%[^/]/%s", host, path);
-        else 
-                sscanf(url, "%[^/]/%s", host, path);
-        
-        if (path[0] == '\0') {
-            strcpy(path, "/"); // Default to root if no path
-        }
-
-        // now we know the host to which we call 
+        //      we know the host to which we call 
         printf("Host: %s, Path: %s\n", host, path);
 
         struct addrinfo * iplist   = getIP(host);
@@ -85,7 +57,6 @@ void FetchRes(char * req,int reqsize,char ** res,int * ressize){
                 "Connection: close\r\n\r\n", path, host);
 
                 // send http req to server
-                
                 if (send(serverSocketfd, request, strlen(request), 0) == -1) {
                         perror("send");
                         close(serverSocketfd);
@@ -103,6 +74,8 @@ void FetchRes(char * req,int reqsize,char ** res,int * ressize){
 
                 int total_bytes_recieved = 0;
                 int curr_bytes_recieved = 0;
+                // this is done to dynamically keep track of the size of the respose
+
                 while(( curr_bytes_recieved = recv(serverSocketfd,
                         *res +total_bytes_recieved,responsebufferSize-total_bytes_recieved,0) ) > 0){
 
