@@ -17,7 +17,7 @@
 #include <netdb.h>      // getaddinfo() 
 #include <arpa/inet.h>  // for ip related tasks , convert the ip to different format
 
-struct addrinfo * getIP(char * hostname){
+struct addrinfo * getIP(const char * hostname){
         
         struct addrinfo req , *res;    
         // req will tell the library what we need and the response is lined list of type addrinfo
