@@ -85,6 +85,7 @@ void FetchRes(char * req,int reqsize,char ** res,int * ressize){
                 "Connection: close\r\n\r\n", path, host);
 
                 // send http req to server
+                
                 if (send(serverSocketfd, request, strlen(request), 0) == -1) {
                         perror("send");
                         close(serverSocketfd);
