@@ -48,7 +48,7 @@ This project implements a high-performance, single-threaded HTTP proxy server in
    - Score formula:
    ```text
    score = (frequency × latency_ms) / response_size_bytes
-   ```text
+   ```
    - Entries with higher scores remain in the cache longer, ensuring that slow-loading or popular resources stick around.
 
 4. **Thread Safety**  
