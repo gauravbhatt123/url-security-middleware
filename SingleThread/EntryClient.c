@@ -4,6 +4,7 @@
  */
 
 #include "Headers.h"    // Declarations for FetchRes(), getIP(), etc.
+
 #include <stdio.h>      // printf(), perror()
 #include <stdlib.h>     // malloc(), free(), exit()
 #include <string.h>     // memset(), strstr(), strdup(), strlen()
@@ -70,11 +71,14 @@ int main()
 
         // initialize our lru to be used
         int capacity = 5;
-        LRUCache *cache = createLRU(capacity);
+        optimisedcache *cache = createcache(capacity);
 
         // Main loop: accept and handle one client at a time
         while (1)
         {
+                printf("Cache print hora h\n");
+                print_cache_state(cache);
+                printf("\n");
                 struct sockaddr_storage client_addr;
                 socklen_t addr_len = sizeof(client_addr);
 
@@ -143,8 +147,9 @@ int main()
 
                 // Forward request and obtain response
                 char *response = NULL;
-                int res_len = -1;
-                FetchResCache(buffer,total_received,&response,&res_len,cache);
+                long double res_len = -1;
+                long double latency = 0.0L;
+                FetchResCache(buffer,total_received,&response,&res_len,cache, &latency);
                 free(buffer);
 
                 // On error, prepare a default 500 response
@@ -173,6 +178,7 @@ int main()
                         sent += n;
                 }
                 printf("Sent %zd bytes back to client.\n", sent);
+                printf("Latency => %.6Lf\n", latency);
 
                 // Clean up
                 close(client_fd);
@@ -180,6 +186,6 @@ int main()
 
         // Cleanup listening socket (never reached)
         close(listen_fd);
-        freeLRU(cache);
+        freecache(cache);
         return 0;
 }
