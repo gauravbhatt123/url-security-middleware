@@ -2,133 +2,81 @@
 
 A high-performance, C-powered HTTP proxy that serves concurrent clients with a smart caching layer—evicting not just by recency but by a dynamic score blending access frequency and latency.
 
-🚀 Project Overview
+## 🎯 PROJECT GOALS & MILESTONES
 
-This project implements a high-performance, multithreaded HTTP proxy server in C. It listens for client connections, forwards requests to target servers, and accelerates repeat access with a custom intelligent cache that outperforms basic LRU by factoring in how often and how slow content is.
+Build a fully functional multithreaded HTTP proxy in C, with:
+- Concurrent client handling via POSIX threads.
+- Efficient request forwarding and caching with an LRU policy.
+- [x] Implement basic proxy server using sockets.
+- [x] Support concurrent clients via threading.
+- [x] Parse and forward HTTP GET requests.
+- [x] Build LRU cache using a doubly linked list + hash map.
+- [x] Ensure thread-safe access to shared cache via mutex/semaphores.
+- [ ] Handle large responses and dynamic content.
+- [ ] Add access logs and performance monitoring.
+- [ ] Make cache/thread count configurable via CLI or config file.
 
-Key highlights:
+## SYSTEM ARCHITECTURE
+![Arch](Arch.png)
 
-Concurrent: One thread per client using POSIX threads.
 
-Dynamic Caching: Evicts entries based on a score = (frequency × latency) / size.
+### 🔧 Technologies Used
 
-Resilient: Timeouts, robust error handling, and graceful evictions.
+- **C Standard Libraries** — for memory management and low-level operations.
+- **POSIX Threads (`pthread.h`)** — for multithreading and synchronization.
+- **Sockets (`sys/socket.h`)** — for network communication.
+- **Linux / Ubuntu (GCC)** — target platform with full POSIX and socket support.
 
-🎯 Goals & Milestones
+### 🔄 Implementation Strategy
 
-Completed ✅
+1. **Socket Server**  
+   - A main socket listens on a port (e.g., 3490).  
+   - Upon each client connection, a new thread is spawned.  
+   - Threads use "connection sockets" to process each request independently.
 
-Socket-Based Proxy: Listens on a TCP port, accepts raw HTTP connections.
+2. **Multithreading**  
+   - Each request is handled in parallel using `pthread_create`.  
+   - Ensures responsiveness and scalability.
 
-Multithreading: Spawns a thread for each incoming client (POSIX threads).
+3. **LRU Cache**  
+   - On each request, the cache is checked first.  
+   - Cache uses LRU eviction: least-used data is removed when full.  
+   - Implemented with a doubly linked list + hash table.
 
-Request Parsing: Correctly handles and forwards HTTP GET requests.
+4. **Thread Safety**  
+   - Shared cache access is synchronized using mutexes or read-write locks.  
+   - Prevents data corruption and ensures consistent behavior.
 
-Smart Cache: Frequency + latency + size → priority-based eviction.
+5. **End-to-End Flow**
 
-Thread Safety: All cache operations guarded by pthread_mutex_t.
+```text
+Client → Proxy → Cache Check
+       ↳ Cache Hit → Serve
+       ↳ Cache Miss → Fetch from Server → Update Cache → Serve
+```
 
-In Progress 🚧
 
-Streaming / Chunked Responses
+## 📌 ASSUMPTIONS
 
-Detailed Access Logging & Perf Metrics
+- Runs on POSIX-compliant systems (e.g., Linux).
+- All client requests are HTTP `GET` (not `POST`, `CONNECT`, etc.).
+- Cache supports static files (HTML, CSS, etc.).
+- DNS and network access are available.
+- Designed for educational/demo use, not production.
+- HTTPS (via `CONNECT`) is out of scope for this version.
 
-CLI Configuration (cache size, thread pool, log level)
 
-🧠 Optimized Cache Design
 
-Unlike traditional LRU (least-recently used), our cache ranks entries by a dynamic score:
+## 🧪 TESTING
 
-Frequency Count: How many times an object is requested.
+You can test the proxy using:
 
-Latency Measurement: Round-trip time to fetch if not cached.
-
-Size Normalization: Larger objects have proportionally lower priority.
-
-Score formula:
-
-score = (frequency × latency_ms) / response_size_bytes
-
-Entries with higher scores stay longer in the cache, ensuring that slow-loading or popular resources stick around.
-
-🧱 System Architecture
-
-[Client] → [Proxy Thread Pool]
-                 ↓
-          [Cache Module]
-            ↙       ↘
-      Hit → Serve   Miss → Fetch → Cache → Serve
-
-Client Handler Threads: Each client is handled in its own POSIX thread.
-
-Cache Module: A doubly-linked list sorted by score.
-
-Synchronization: pthread_mutex_t locks around all shared data.
-
-🔧 Tech Stack
-
-Component
-
-Purpose
-
-C (GCC)
-
-Core implementation
-
-pthread.h
-
-Multithreading
-
-sys/socket.h
-
-TCP socket programming
-
-arpa/inet.h
-
-IP address utilities
-
-netdb.h
-
-DNS lookup
-
-unistd.h, fcntl.h
-
-Low-level I/O & timeouts
-
-🧪 Quickstart & Testing
-
-Compile:
-
-gcc EntryClient.c FetchServer.c LRU.c CallDns.c ClientToServer.c CacheData.c -o proxy -pthread
-
-Run:
-
-./proxy 3490          # listens on port 3490
-
-Test with curl:
-
+```bash
 curl -x http://localhost:3490 http://example.com
+```
 
-Browser:
-
-HTTP Proxy: localhost:3490 (no HTTPS yet)
-
-📌 Assumptions & Limitations
-
-POSIX-compliant system (Linux, macOS).
-
-HTTP GET only; no POST, HTTPS, or streaming support yet.
-
-Educational/demo quality, not hardened for untrusted environments.
-
-🚀 Next Steps
-
-Add streaming/chunked response handling.
-
-Expose CLI flags for cache size, thread count, and log verbosity.
-
-Integrate detailed metrics & visualizations.
-
-Made with ❤️ by the Proxy Squad
+Or by configuring your browser’s proxy settings to:
+- Proxy server: `localhost`
+- Port: `3490`
+- Use only HTTP (not HTTPS)
 
