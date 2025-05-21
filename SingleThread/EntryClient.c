@@ -76,7 +76,6 @@ int main()
         // Main loop: accept and handle one client at a time
         while (1)
         {
-                printf("Cache print hora h\n");
                 print_cache_state(cache);
                 printf("\n");
                 struct sockaddr_storage client_addr;

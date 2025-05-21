@@ -1,13 +1,23 @@
 # 🔁 Multithreaded Proxy Server with Optimized Caching
 
-A high-performance, C-powered HTTP proxy that serves concurrent clients with a smart caching layer—evicting not just by recency but by a dynamic score blending access frequency and latency.
+A high-performance, C-based HTTP proxy that handles multiple clients concurrently and speeds up repeat requests with a smart cache—evicting entries by a dynamic score blending access frequency and latency.
 
 ## 🎯 PROJECT GOALS & MILESTONES
 
-This project implements a high-performance, single-threaded HTTP proxy server in C. It listens for one client connection at a time, forwards requests to target servers, and accelerates repeat access with a custom optimised cache that outperforms basic LRU by factoring in how often and how slow content is.
+This project implements a high-performance, multithreaded HTTP proxy cache in C that handles multiple clients concurrently, forwards requests to origin servers, and accelerates repeat access with a custom cache optimized beyond basic LRU by factoring in content frequency and latency.
+
 ### Key highlights:
-- Concurrent client handling via POSIX threads.
-- Efficient request forwarding and caching with an LRU policy.
+- **Concurrent client handling** via POSIX threads (`pthread.h`)  
+- **Efficient request forwarding** over sockets (`sys/socket.h`)  
+- **Dynamic-Score Cache** : ranks entries by  
+  - **Frequency** (how often requested)  
+  - **Latency** (round-trip fetch time)  
+  - **Size normalization** (larger objects demoted)  
+- **Thread-safe cache** access using mutexes/read-write locks  
+- **Configurable** cache size & thread count via CLI or config file  
+- **Access logs & performance metrics** for monitoring 
+
+### Milestones
 - [x] Implement basic proxy server using sockets.
 - [x] Support concurrent clients via threading.
 - [x] Parse and forward HTTP GET requests.
@@ -49,7 +59,8 @@ This project implements a high-performance, single-threaded HTTP proxy server in
    ```text
    score = (frequency × latency_ms) / response_size_bytes
    ```
-   - Entries with higher scores remain in the cache longer, ensuring that slow-loading or popular resources stick around.
+   - Higher score ⇒ stays in cache longer.
+   - Eviction removes lowest-score entry when full.
 
 4. **Thread Safety**  
    - Shared cache access is synchronized using mutexes or read-write locks.  
@@ -91,87 +102,114 @@ curl -x http://localhost:3490 http://example.com
 
 ## 🧪 SAMPLE
 ```text
-wtf_moo@wtf-hplaptop14sfq1xxx ~/D/Multi-threaded-proxy-web-server (main)> cd SingleThread/
-wtf_moo@wtf-hplaptop14sfq1xxx ~/D/M/SingleThread (main)> gcc EntryClient.c FetchServer.c LRU.c CallDns.c ClientToServer.c CacheData.c
+wtf_moo@wtf-hplaptop14sfq1xxx ~/D/M/SingleThread (main)> gcc EntryClient.c FetchServer.c Cache.c CacheData.c CallDns.c ClientToServer.c
 wtf_moo@wtf-hplaptop14sfq1xxx ~/D/M/SingleThread (main)> ./a.out
 Proxy listening on port 3490...
-Cache print hora h
 -------- Cache State --------
 Cache Size: 0 / 5
 Cache Hits: 0, Cache Misses: 0
 
 Cache is empty.
 
-Received request ("GET http://movies.com/ HTTP/1.1
-...") movies.com
-FetchResCache: Host=movies.com Path=/
-Cache MISS, fetching from server
-Host: movies.com, Path: /
-Inserted into cache: size=1/5
-Sent 869 bytes back to client.
-Latency => 0.812782
-Cache print hora h
--------- Cache State --------
-Cache Size: 1 / 5
-Cache Hits: 0, Cache Misses: 1
-
-Entry 1:
-  URL     : movies.com
-  Path    : /
-  Size    : 869.00 bytes
-  Freq    : 1
-  Latency : 0.812782 ms
-  Score   : 0.000935
-----------------------------
-
-Received request ("GET http://movies.com/ HTTP/1.1
-...") movies.com
-FetchResCache: Host=movies.com Path=/
-Cache HIT
-Sent 869 bytes back to client.
-Latency => 0.000000
-Cache print hora h
--------- Cache State --------
-Cache Size: 1 / 5
-Cache Hits: 1, Cache Misses: 1
-
-Entry 1:
-  URL     : movies.com
-  Path    : /
-  Size    : 869.00 bytes
-  Freq    : 2
-  Latency : 0.812782 ms
-  Score   : 0.001871
-----------------------------
-
 Received request ("GET http://example.com/ HTTP/1.1
 Host: example.co...")
 FetchResCache: Host=example.com Path=/
 Cache MISS, fetching from server
 Host: example.com, Path: /
+Inserted into cache: size=1/5
+Sent 1512 bytes back to client.
+Latency => 1.282316
+-------- Cache State --------
+Cache Size: 1 / 5
+Cache Hits: 0, Cache Misses: 1
+
+Entry 1:
+  URL     : example.com
+  Path    : /
+  Size    : 1512.00 bytes
+  Freq    : 1
+  Latency : 1.282316 ms
+  Score   : 0.000848
+----------------------------
+
+Received request ("GET http://example.com/ HTTP/1.1
+Host: example.co...")
+FetchResCache: Host=example.com Path=/
+Cache HIT
+Sent 1512 bytes back to client.
+Latency => 0.000000
+-------- Cache State --------
+Cache Size: 1 / 5
+Cache Hits: 1, Cache Misses: 1
+
+Entry 1:
+  URL     : example.com
+  Path    : /
+  Size    : 1512.00 bytes
+  Freq    : 2
+  Latency : 1.282316 ms
+  Score   : 0.001696
+----------------------------
+
+Received request ("GET http://movies.com/ HTTP/1.1
+...") movies.com
+FetchResCache: Host=movies.com Path=/
+Cache MISS, fetching from server
+Host: movies.com, Path: /
 Inserted into cache: size=2/5
-Sent 1521 bytes back to client.
-Latency => 1.127546
-Cache print hora h
+Sent 869 bytes back to client.
+Latency => 0.598354
 -------- Cache State --------
 Cache Size: 2 / 5
 Cache Hits: 1, Cache Misses: 2
 
 Entry 1:
+  URL     : example.com
+  Path    : /
+  Size    : 1512.00 bytes
+  Freq    : 2
+  Latency : 1.282316 ms
+  Score   : 0.001696
+----------------------------
+Entry 2:
   URL     : movies.com
   Path    : /
   Size    : 869.00 bytes
-  Freq    : 2
-  Latency : 0.812782 ms
-  Score   : 0.001871
+  Freq    : 1
+  Latency : 0.598354 ms
+  Score   : 0.000689
 ----------------------------
-Entry 2:
+
+  Score   : 0.001696
+----------------------------
+
+Received request ("GET http://movies.com/ HTTP/1.1
+...") movies.com
+FetchResCache: Host=movies.com Path=/
+Cache MISS, fetching from server
+Host: movies.com, Path: /
+Inserted into cache: size=2/5
+Sent 869 bytes back to client.
+Latency => 0.598354
+-------- Cache State --------
+Cache Size: 2 / 5
+Cache Hits: 1, Cache Misses: 2
+
+Entry 1:
   URL     : example.com
   Path    : /
-  Size    : 1521.00 bytes
+  Size    : 1512.00 bytes
+  Freq    : 2
+  Latency : 1.282316 ms
+  Score   : 0.001696
+----------------------------
+Entry 2:
+  URL     : movies.com
+  Path    : /
+  Size    : 869.00 bytes
   Freq    : 1
-  Latency : 1.127546 ms
-  Score   : 0.000741
+  Latency : 0.598354 ms
+  Score   : 0.000689
 ----------------------------
 
 ```
