@@ -85,7 +85,6 @@ gcc EntryClient.c FetchServer.c LRU.c CallDns.c ClientToServer.c CacheData.c -o 
 ./a.out
 ```
 ```bash
-```bash
 curl -x http://localhost:3490 http://example.com
 ```
 
