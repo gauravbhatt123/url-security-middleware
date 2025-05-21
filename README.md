@@ -90,7 +90,7 @@ Client → Proxy → Cache Check
 
 You can test the proxy using:
 ```bash
-gcc EntryClient.c FetchServer.c LRU.c CallDns.c ClientToServer.c CacheData.c -o proxy
+gcc EntryClient.c FetchServer.c Cache.c CallDns.c ClientToServer.c CacheData.c 
 ```
 ```bash
 ./a.out
