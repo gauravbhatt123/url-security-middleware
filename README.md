@@ -90,129 +90,23 @@ Client → Proxy → Cache Check
 
 You can test the proxy using:
 ```bash
+cd proxy
 gcc EntryClient.c FetchServer.c Cache.c CallDns.c ClientToServer.c CacheData.c 
 ```
 ```bash
 ./a.out
 ```
 ```bash
-curl -x http://localhost:3490 http://example.com
+chmod +x ../proxy/proxy
+```
+```bash
+cd gui
+python3 gui.py
 ```
 
 
-## 🧪 SAMPLE
-```text
-wtf_moo@wtf-hplaptop14sfq1xxx ~/D/M/SingleThread (main)> gcc EntryClient.c FetchServer.c Cache.c CacheData.c CallDns.c ClientToServer.c
-wtf_moo@wtf-hplaptop14sfq1xxx ~/D/M/SingleThread (main)> ./a.out
-Proxy listening on port 3490...
--------- Cache State --------
-Cache Size: 0 / 5
-Cache Hits: 0, Cache Misses: 0
-
-Cache is empty.
-
-Received request ("GET http://example.com/ HTTP/1.1
-Host: example.co...")
-FetchResCache: Host=example.com Path=/
-Cache MISS, fetching from server
-Host: example.com, Path: /
-Inserted into cache: size=1/5
-Sent 1512 bytes back to client.
-Latency => 1.282316
--------- Cache State --------
-Cache Size: 1 / 5
-Cache Hits: 0, Cache Misses: 1
-
-Entry 1:
-  URL     : example.com
-  Path    : /
-  Size    : 1512.00 bytes
-  Freq    : 1
-  Latency : 1.282316 ms
-  Score   : 0.000848
-----------------------------
-
-Received request ("GET http://example.com/ HTTP/1.1
-Host: example.co...")
-FetchResCache: Host=example.com Path=/
-Cache HIT
-Sent 1512 bytes back to client.
-Latency => 0.000000
--------- Cache State --------
-Cache Size: 1 / 5
-Cache Hits: 1, Cache Misses: 1
-
-Entry 1:
-  URL     : example.com
-  Path    : /
-  Size    : 1512.00 bytes
-  Freq    : 2
-  Latency : 1.282316 ms
-  Score   : 0.001696
-----------------------------
-
-Received request ("GET http://movies.com/ HTTP/1.1
-...") movies.com
-FetchResCache: Host=movies.com Path=/
-Cache MISS, fetching from server
-Host: movies.com, Path: /
-Inserted into cache: size=2/5
-Sent 869 bytes back to client.
-Latency => 0.598354
--------- Cache State --------
-Cache Size: 2 / 5
-Cache Hits: 1, Cache Misses: 2
-
-Entry 1:
-  URL     : example.com
-  Path    : /
-  Size    : 1512.00 bytes
-  Freq    : 2
-  Latency : 1.282316 ms
-  Score   : 0.001696
-----------------------------
-Entry 2:
-  URL     : movies.com
-  Path    : /
-  Size    : 869.00 bytes
-  Freq    : 1
-  Latency : 0.598354 ms
-  Score   : 0.000689
-----------------------------
-
-  Score   : 0.001696
-----------------------------
-
-Received request ("GET http://movies.com/ HTTP/1.1
-...") movies.com
-FetchResCache: Host=movies.com Path=/
-Cache MISS, fetching from server
-Host: movies.com, Path: /
-Inserted into cache: size=2/5
-Sent 869 bytes back to client.
-Latency => 0.598354
--------- Cache State --------
-Cache Size: 2 / 5
-Cache Hits: 1, Cache Misses: 2
-
-Entry 1:
-  URL     : example.com
-  Path    : /
-  Size    : 1512.00 bytes
-  Freq    : 2
-  Latency : 1.282316 ms
-  Score   : 0.001696
-----------------------------
-Entry 2:
-  URL     : movies.com
-  Path    : /
-  Size    : 869.00 bytes
-  Freq    : 1
-  Latency : 0.598354 ms
-  Score   : 0.000689
-----------------------------
-
-```
+## 🧪 SAMPLE OUTPUT
+![Arch](Output.png)
 Or by configuring your browser’s proxy settings to:
 - Proxy server: `localhost`
 - Port: `3490`

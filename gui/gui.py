@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, scrolledtext, filedialog, messagebox
+from tkinter import ttk, scrolledtext, messagebox
 import subprocess
 import os
 import signal
@@ -8,7 +8,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 import re
 
-# HTTP exception for malformed/non-HTTP responses
 from http.client import BadStatusLine
 
 # Optional requests import
@@ -17,11 +16,12 @@ try:
     from requests.exceptions import ReadTimeout, ConnectionError
 except ImportError:
     requests = None
-    ReadTimeout = ConnectionError = Exception  # placeholders
+    ReadTimeout = ConnectionError = Exception
 
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import numpy as np
 
 # Setup logging to file
 if not os.path.exists('logs'):
@@ -108,12 +108,14 @@ class ProxyControlPanel:
         # Latency plot
         fig = plt.Figure(figsize=(4,2))
         self.ax = fig.add_subplot(111)
-        self.line, = self.ax.plot([], [])
+        self.line, = self.ax.plot([], [], marker='o', linestyle='-')
         self.ax.set_title('Request Latency (ms)')
-        self.ax.set_xlabel('Req #')
-        self.ax.set_ylabel('Latency')
-        canvas = FigureCanvasTkAgg(fig, master=bottom)
-        canvas.get_tk_widget().pack(side='right', fill='both', expand=True)
+        self.ax.set_xlabel('Request #')
+        self.ax.set_ylabel('Latency (ms)')
+        self.canvas = FigureCanvasTkAgg(fig, master=bottom)
+        self.canvas.get_tk_widget().pack(side='right', fill='both', expand=True)
+        self.canvas.draw()
+
         self.anim = animation.FuncAnimation(
             fig,
             self.update_plot,
@@ -148,7 +150,6 @@ class ProxyControlPanel:
         in_cache = False
         entry = {}
         for line in self.proxy_process.stdout:
-            # Skip raw HTML responses
             if line.lstrip().startswith('<'):
                 continue
             self.log_area.insert(tk.END, line)
@@ -212,7 +213,8 @@ class ProxyControlPanel:
                 proxies={"http": f"http://localhost:{self.port_var.get()}"},
                 timeout=5
             )
-            self.latencies.append(resp.elapsed.total_seconds() * 1000)
+            latency_ms = resp.elapsed.total_seconds() * 1000
+            self.latencies.append(latency_ms)
             text = (
                 f"Status: {resp.status_code}\n\n"
                 f"Headers:\n{resp.headers}\n\n"
@@ -237,9 +239,28 @@ class ProxyControlPanel:
             messagebox.showerror("Request Error", str(e))
 
     def update_plot(self, _):
-        self.line.set_data(range(len(self.latencies)), self.latencies)
-        self.ax.relim()
-        self.ax.autoscale_view()
+        if not self.latencies:
+            return
+        # keep last 50
+        if len(self.latencies) > 50:
+            self.latencies = self.latencies[-50:]
+
+        x = np.arange(1, len(self.latencies) + 1)
+        y = np.array(self.latencies)
+        self.line.set_data(x, y)
+
+        # Dynamic x-limits
+        self.ax.set_xlim(1, max(len(self.latencies), 1))
+        # Dynamic y-limits with 10% padding
+        y_min, y_max = y.min(), y.max()
+        pad = (y_max - y_min) * 0.1 if y_max > y_min else y_max * 0.1
+        self.ax.set_ylim(y_min - pad, y_max + pad)
+
+        # Update ticks
+        self.ax.set_xticks(x)
+        self.ax.set_xticklabels(x)
+
+        self.canvas.draw()
 
 if __name__ == '__main__':
     root = tk.Tk()
