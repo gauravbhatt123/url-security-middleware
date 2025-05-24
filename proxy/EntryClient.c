@@ -1,6 +1,6 @@
 /*
  * Multithreaded Proxy Server with Dynamic Buffering, Timeouts, and Robust Error Handling
- * Listens on PORT, accepts connections, dispatches each to its own thread.
+ * Now with SO_REUSEADDR and SO_REUSEPORT to allow immediate re-bind after close.
  */
 
 #include "Headers.h"    // Declarations for FetchRes(), getIP(), etc.
@@ -17,9 +17,9 @@
 #include <pthread.h>    // pthreads
 
 #define PORT "3490"     // Port to listen on
-#define BACKLOG 10      // Max pending connections in queue
-#define INIT_BUF 1024   // Initial buffer size for requests
-#define TIMEOUT_SEC 5   // Socket recv/send timeout in seconds
+#define BACKLOG 10        // Max pending connections in queue
+#define INIT_BUF 1024     // Initial buffer size for requests
+#define TIMEOUT_SEC 5     // Socket recv/send timeout in seconds
 
 // Global cache and its mutex
 static optimisedcache *cache;
@@ -35,7 +35,7 @@ static void *handle_client(void *arg);
 
 int main()
 {
-    // Prepare hints for getaddrinfo
+    setvbuf(stdout, NULL, _IONBF, 0);
     struct addrinfo hints = {0}, *res;
     hints.ai_family   = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
@@ -53,11 +53,20 @@ int main()
     }
 
     int yes = 1;
-    if (setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) < 0) {
-        perror("setsockopt");
+    // Allow reusing address
+    if (setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) < 0) {
+        perror("setsockopt(SO_REUSEADDR)");
         close(listen_fd);
         exit(EXIT_FAILURE);
     }
+    // Allow reusing port immediately after close
+    #ifdef SO_REUSEPORT
+    if (setsockopt(listen_fd, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes)) < 0) {
+        perror("setsockopt(SO_REUSEPORT)");
+        close(listen_fd);
+        exit(EXIT_FAILURE);
+    }
+    #endif
 
     if (bind(listen_fd, res->ai_addr, res->ai_addrlen) < 0) {
         perror("bind");
@@ -86,7 +95,6 @@ int main()
             continue;
         }
 
-        // Spawn a detached thread to handle this client
         pthread_t tid;
         thread_arg *arg = malloc(sizeof(*arg));
         arg->client_fd = client_fd;
@@ -99,7 +107,6 @@ int main()
         pthread_detach(tid);
     }
 
-    // Never reached
     close(listen_fd);
     freecache(cache);
     pthread_mutex_destroy(&cache_mutex);
@@ -111,12 +118,10 @@ static void *handle_client(void *arg) {
     int client_fd = t->client_fd;
     free(t);
 
-    // Set timeouts on client socket
     struct timeval timeout = {TIMEOUT_SEC, 0};
     setsockopt(client_fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout);
     setsockopt(client_fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof timeout);
 
-    // Read request headers
     size_t buf_size = INIT_BUF;
     char *buffer = malloc(buf_size);
     if (!buffer) {
@@ -156,7 +161,6 @@ static void *handle_client(void *arg) {
     }
     printf("Received request (\"%.*s...\")\n", 50, buffer);
 
-    // Forward via cache (protected by cache_mutex)
     char *response = NULL;
     long double res_len = -1, latency = 0.0L;
 
@@ -168,7 +172,6 @@ static void *handle_client(void *arg) {
 
     free(buffer);
 
-    // On error, send 500
     if (!response || res_len < 0) {
         const char *err500 =
             "HTTP/1.1 500 Internal Server Error\r\n"
@@ -179,10 +182,11 @@ static void *handle_client(void *arg) {
         response = strdup(err500);
         res_len = strlen(err500);
     }
+    fprintf(stderr, ">>> PROXY → CLIENT (%Lf ms):\n%.*s\n", latency*1000,
+            (int)res_len, response);
 
-    // Send response
     ssize_t sent = 0;
-    while (sent < res_len) {
+    while (sent < (ssize_t)res_len) {
         n = send(client_fd, response + sent, res_len - sent, 0);
         if (n < 0) {
             perror("send");
