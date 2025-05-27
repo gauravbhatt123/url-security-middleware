@@ -142,44 +142,50 @@ class ProxyControlPanel:
         in_cache = False
         entry = {}
         for line in self.proxy_process.stdout:
-            if line.lstrip().startswith('<'):
-                continue
             self.log_area.insert(tk.END, line)
             self.log_area.see(tk.END)
             logger.info(line.strip())
 
-            if 'Address already in use' in line:
-                messagebox.showerror("Bind Error", line.strip())
-                self.stop_proxy()
-                return
-
-            if 'Proxy listening on port' in line and not self.proxy_ready:
-                self.proxy_ready = True
-                self.send_button.config(state='normal')
-
-            if '-------- Cache State' in line:
+            # detect when cache dump starts
+            if 'Cache State Starting' in line:
                 in_cache = True
                 self.cache_table.delete(*self.cache_table.get_children())
+                entry = {}
                 continue
 
+            # detect end of each entry
+            if in_cache and 'Cache State Ending' in line:
+                # only insert if we have a complete entry
+                if 'Score' in entry:
+                    vals = [entry.get(c, '') for c in ['URL','Path','Size','Freq','Latency','Score']]
+                    self.cache_table.insert('', 'end', values=vals)
+                entry = {}
+                continue
+
+            # collect fields while in cache mode
             if in_cache:
+                # match entry start (optional)
                 if re.match(r'Entry \d+:', line):
                     entry = {}
-                for key, pat in [('URL', r'URL\s*:\s*(.*)'),
-                                 ('Path', r'Path\s*:\s*(.*)'),
-                                 ('Size', r'Size\s*:\s*([\d\.]+)'),
-                                 ('Freq', r'Freq\s*:\s*(\d+)'),
-                                 ('Latency', r'Latency\s*:\s*([\d\.]+)'),
-                                 ('Score', r'Score\s*:\s*([\d\.]+)')]:
+                for key, pat in [
+                    ('URL',     r'URL\s*:\s*(.*)'),
+                    ('Path',    r'Path\s*:\s*(.*)'),
+                    ('Size',    r'Size\s*:\s*([\d\.]+)'),
+                    ('Freq',    r'Freq\s*:\s*(\d+)'),
+                    ('Latency', r'Latency\s*:\s*([\d\.]+)'),
+                    ('Score',   r'Score\s*:\s*([\d\.]+)')
+                ]:
                     m = re.search(pat, line)
                     if m:
                         entry[key] = m.group(1)
-                if 'Score' in entry:
-                    vals = [entry.get(c,'') for c in ['URL','Path','Size','Freq','Latency','Score']]
-                    self.cache_table.insert('', 'end', values=vals)
-                if '--------' in line:
-                    in_cache = False
+                continue
 
+            # proxy ready detection
+            if 'Proxy listening on port' in line and not getattr(self, 'proxy_ready', False):
+                self.proxy_ready = True
+                self.send_button.config(state='normal')
+
+        # process ended
         self.stop_proxy()
 
     def stop_proxy(self):
@@ -250,22 +256,15 @@ class ProxyControlPanel:
         if not self.latencies:
             return
 
-        # unpack sequences and values
         seqs, vals = zip(*self.latencies)
         x = np.array(seqs)
         y = np.array(vals)
 
         self.line.set_data(x, y)
-
-        # recompute limits
         self.ax.relim()
         self.ax.autoscale_view()
-
-        # update x ticks to show actual request numbers
         self.ax.set_xticks(x)
         self.ax.set_xticklabels(x, rotation=45, fontsize='small')
-
-        # redraw canvas
         self.canvas.draw_idle()
 
 

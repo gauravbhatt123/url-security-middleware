@@ -1,0 +1,194 @@
+2025-05-27 22:37:58,095 - Proxy listening on port 3490...
+2025-05-27 22:38:22,463 - Received request ("GET http://movies.com/ HTTP/1.1
+2025-05-27 22:38:22,502 - Host: movies.com
+2025-05-27 22:38:22,503 - ...")
+2025-05-27 22:38:22,503 - FetchResCache: Host=movies.com Path=/
+2025-05-27 22:38:22,504 - Cache MISS, fetching from server
+2025-05-27 22:38:22,504 - Inserted into cache: size=1/20
+2025-05-27 22:38:22,505 - -------- Cache State --------
+2025-05-27 22:38:22,505 - Cache Size: 1 / 20
+2025-05-27 22:38:22,506 - Cache Hits: 0, Cache Misses: 1
+2025-05-27 22:38:22,508 - 
+2025-05-27 22:38:22,508 - Entry 1:
+2025-05-27 22:38:22,508 - URL     : movies.com
+2025-05-27 22:38:22,508 - Path    : /
+2025-05-27 22:38:22,509 - Size    : 381.00 bytes
+2025-05-27 22:38:22,509 - Freq    : 1
+2025-05-27 22:38:22,510 - Latency : 0.482138 ms
+2025-05-27 22:38:22,510 - Score   : 0.001265
+2025-05-27 22:38:22,511 - ----------------------------
+2025-05-27 22:38:22,514 - 
+2025-05-27 22:38:22,519 - >>> PROXY → CLIENT (482.138000 ms):
+2025-05-27 22:38:22,520 - HTTP/1.1 301 Moved Permanently
+2025-05-27 22:38:22,528 - Server: AkamaiGHost
+2025-05-27 22:38:22,539 - Content-Length: 0
+2025-05-27 22:38:22,540 - Location: https://www.fandango.com/
+2025-05-27 22:38:22,554 - Cache-Control: max-age=0
+2025-05-27 22:38:22,554 - Expires: Tue, 27 May 2025 17:08:19 GMT
+2025-05-27 22:38:22,571 - Date: Tue, 27 May 2025 17:08:19 GMT
+2025-05-27 22:38:22,572 - Connection: close
+2025-05-27 22:38:22,591 - Server-Timing: cdn-cache; desc=HIT
+2025-05-27 22:38:22,592 - Server-Timing: edge; dur=1
+2025-05-27 22:38:22,613 - Server-Timing: ak_p; desc="1748365699430_390167654_822636311_7_3756_310_0_-";dur=1
+2025-05-27 22:38:22,614 - 
+2025-05-27 22:38:22,638 - 
+2025-05-27 22:38:22,639 - Sent 381 bytes back to client. Latency => 0.482138
+2025-05-27 22:47:32,613 - Proxy listening on port 3490...
+2025-05-27 22:47:42,972 - Received request ("GET http://movies.com/ HTTP/1.1
+2025-05-27 22:47:42,974 - Host: movies.com
+2025-05-27 22:47:42,975 - ...")
+2025-05-27 22:47:42,975 - FetchResCache: Host=movies.com Path=/
+2025-05-27 22:47:42,975 - Cache MISS, fetching from server
+2025-05-27 22:47:42,976 - Inserted into cache: size=1/20
+2025-05-27 22:47:42,976 - Cache State Starting
+2025-05-27 22:47:42,978 - Cache Size: 1 / 20
+2025-05-27 22:47:42,979 - Cache Hits: 0, Cache Misses: 1
+2025-05-27 22:47:42,979 - 
+2025-05-27 22:47:42,980 - Entry 1:
+2025-05-27 22:47:42,980 - URL     : movies.com
+2025-05-27 22:47:42,980 - Path    : /
+2025-05-27 22:47:42,981 - Size    : 872.00 bytes
+2025-05-27 22:47:42,981 - Freq    : 1
+2025-05-27 22:47:42,981 - Latency : 0.669739 ms
+2025-05-27 22:47:42,982 - Score   : 0.000768
+2025-05-27 22:47:42,983 - Cache State Ending
+2025-05-27 22:47:42,984 - 
+2025-05-27 22:47:42,986 - >>> PROXY → CLIENT (669.739000 ms):
+2025-05-27 22:47:42,987 - HTTP/1.1 404 Not Found
+2025-05-27 22:47:42,987 - date: Tue, 27 May 2025 17:17:42 GMT
+2025-05-27 22:47:42,988 - last-modified: Tue, 27 May 2025 17:17:42 GMT
+2025-05-27 22:47:42,989 - accept-ranges: none
+2025-05-27 22:47:42,989 - content-type: text/html
+2025-05-27 22:47:42,990 - connection: close
+2025-05-27 22:47:42,990 - 
+2025-05-27 22:47:42,991 - <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+2025-05-27 22:47:42,991 - <html>
+2025-05-27 22:47:42,991 - <head><title>UltraDNS Client Redirection Service</title></head>
+2025-05-27 22:47:42,992 - <body><table border="2" width="100%">
+2025-05-27 22:47:42,992 - <tr bgcolor="#FF4444"><th colspan="2">
+2025-05-27 22:47:42,993 - <p><h1>HTTP/1.1 404 Not Found</h1></p>
+2025-05-27 22:47:42,994 - </th></tr>
+2025-05-27 22:47:42,994 - <tr><td width="20%"><tt><strong>ORIGIN HOST: </strong></td><td width="80%">106.219.195.0</td></tt></tr>
+2025-05-27 22:47:42,995 - <tr><td width="20%"><tt><strong>TARGET HOST: </strong></td><td width="80%">movies.com</td></tt></tr>
+2025-05-27 22:47:42,997 - <tr><td width="20%"><tt><strong>TARGET PAGE: </strong></td><td width="80%">//</td></tt></tr>
+2025-05-27 22:47:42,997 - </table><br><br>
+2025-05-27 22:47:42,998 - <center><hr width="90%"><br>
+2025-05-27 22:47:42,999 - Copyright &copy; Vercara, LLC.<br>
+2025-05-27 22:47:42,999 - All Rights Reserved<br><br></center>
+2025-05-27 22:47:43,000 - </body></html>
+2025-05-27 22:47:43,000 - 
+2025-05-27 22:47:43,001 - 
+2025-05-27 22:47:43,001 - 
+2025-05-27 22:47:43,002 - Sent 872 bytes back to client. Latency => 0.669739
+2025-05-27 22:47:50,479 - Received request ("GET http://example.com/ HTTP/1.1
+2025-05-27 22:47:50,482 - Host: example.co...")
+2025-05-27 22:47:50,483 - FetchResCache: Host=example.com Path=/
+2025-05-27 22:47:50,483 - Cache MISS, fetching from server
+2025-05-27 22:47:50,484 - Inserted into cache: size=2/20
+2025-05-27 22:47:50,484 - Cache State Starting
+2025-05-27 22:47:50,485 - Cache Size: 2 / 20
+2025-05-27 22:47:50,485 - Cache Hits: 0, Cache Misses: 2
+2025-05-27 22:47:50,487 - 
+2025-05-27 22:47:50,488 - Entry 1:
+2025-05-27 22:47:50,488 - URL     : movies.com
+2025-05-27 22:47:50,489 - Path    : /
+2025-05-27 22:47:50,489 - Size    : 872.00 bytes
+2025-05-27 22:47:50,490 - Freq    : 1
+2025-05-27 22:47:50,491 - Latency : 0.669739 ms
+2025-05-27 22:47:50,491 - Score   : 0.000768
+2025-05-27 22:47:50,492 - Cache State Ending
+2025-05-27 22:47:50,493 - Entry 2:
+2025-05-27 22:47:50,493 - URL     : example.com
+2025-05-27 22:47:50,495 - Path    : /
+2025-05-27 22:47:50,496 - Size    : 1512.00 bytes
+2025-05-27 22:47:50,496 - Freq    : 1
+2025-05-27 22:47:50,496 - Latency : 1.147158 ms
+2025-05-27 22:47:50,497 - Score   : 0.000759
+2025-05-27 22:47:50,498 - Cache State Ending
+2025-05-27 22:47:50,499 - 
+2025-05-27 22:47:50,501 - >>> PROXY → CLIENT (1147.158000 ms):
+2025-05-27 22:47:50,502 - HTTP/1.1 200 OK
+2025-05-27 22:47:50,503 - Content-Type: text/html
+2025-05-27 22:47:50,503 - ETag: "84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134"
+2025-05-27 22:47:50,504 - Last-Modified: Mon, 13 Jan 2025 20:11:20 GMT
+2025-05-27 22:47:50,504 - Cache-Control: max-age=660
+2025-05-27 22:47:50,505 - Date: Tue, 27 May 2025 17:17:50 GMT
+2025-05-27 22:47:50,505 - Content-Length: 1256
+2025-05-27 22:47:50,506 - Connection: close
+2025-05-27 22:47:50,506 - 
+2025-05-27 22:47:50,507 - <!doctype html>
+2025-05-27 22:47:50,507 - <html>
+2025-05-27 22:47:50,507 - <head>
+2025-05-27 22:47:50,508 - <title>Example Domain</title>
+2025-05-27 22:47:50,509 - 
+2025-05-27 22:47:50,509 - <meta charset="utf-8" />
+2025-05-27 22:47:50,509 - <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+2025-05-27 22:47:50,510 - <meta name="viewport" content="width=device-width, initial-scale=1" />
+2025-05-27 22:47:50,510 - <style type="text/css">
+2025-05-27 22:47:50,511 - body {
+2025-05-27 22:47:50,511 - background-color: #f0f0f2;
+2025-05-27 22:47:50,512 - margin: 0;
+2025-05-27 22:47:50,512 - padding: 0;
+2025-05-27 22:47:50,513 - font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+2025-05-27 22:47:50,514 - 
+2025-05-27 22:47:50,514 - }
+2025-05-27 22:47:50,515 - div {
+2025-05-27 22:47:50,515 - width: 600px;
+2025-05-27 22:47:50,515 - margin: 5em auto;
+2025-05-27 22:47:50,516 - padding: 2em;
+2025-05-27 22:47:50,517 - background-color: #fdfdff;
+2025-05-27 22:47:50,517 - border-radius: 0.5em;
+2025-05-27 22:47:50,518 - box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);
+2025-05-27 22:47:50,518 - }
+2025-05-27 22:47:50,519 - a:link, a:visited {
+2025-05-27 22:47:50,519 - color: #38488f;
+2025-05-27 22:47:50,520 - text-decoration: none;
+2025-05-27 22:47:50,521 - }
+2025-05-27 22:47:50,522 - @media (max-width: 700px) {
+2025-05-27 22:47:50,522 - div {
+2025-05-27 22:47:50,523 - margin: 0 auto;
+2025-05-27 22:47:50,524 - width: auto;
+2025-05-27 22:47:50,524 - }
+2025-05-27 22:47:50,525 - }
+2025-05-27 22:47:50,526 - </style>
+2025-05-27 22:47:50,526 - </head>
+2025-05-27 22:47:50,527 - 
+2025-05-27 22:47:50,527 - <body>
+2025-05-27 22:47:50,527 - <div>
+2025-05-27 22:47:50,528 - <h1>Example Domain</h1>
+2025-05-27 22:47:50,529 - <p>This domain is for use in illustrative examples in documents. You may use this
+2025-05-27 22:47:50,529 - domain in literature without prior coordination or asking for permission.</p>
+2025-05-27 22:47:50,529 - <p><a href="https://www.iana.org/domains/example">More information...</a></p>
+2025-05-27 22:47:50,531 - </div>
+2025-05-27 22:47:50,532 - </body>
+2025-05-27 22:47:50,532 - </html>
+2025-05-27 22:47:50,532 - 
+2025-05-27 22:47:50,533 - Sent 1512 bytes back to client. Latency => 1.147158
+2025-05-27 22:47:53,608 - Received request ("GET http://example.com/ HTTP/1.1
+2025-05-27 22:47:53,609 - Host: example.co...")
+2025-05-27 22:47:53,613 - FetchResCache: Host=example.com Path=/
+2025-05-27 22:47:53,614 - Cache HIT
+2025-05-27 22:47:53,615 - Cache State Starting
+2025-05-27 22:47:53,618 - Cache Size: 2 / 20
+2025-05-27 22:47:53,625 - Cache Hits: 1, Cache Misses: 2
+2025-05-27 22:47:53,627 - 
+2025-05-27 22:47:53,628 - Entry 1:
+2025-05-27 22:47:53,629 - URL     : example.com
+2025-05-27 22:47:53,630 - Path    : /
+2025-05-27 22:47:53,631 - Size    : 1512.00 bytes
+2025-05-27 22:47:53,631 - Freq    : 2
+2025-05-27 22:47:53,632 - Latency : 1.147158 ms
+2025-05-27 22:47:53,633 - Score   : 0.001517
+2025-05-27 22:47:53,633 - Cache State Ending
+2025-05-27 22:47:53,634 - Entry 2:
+2025-05-27 22:47:53,636 - URL     : movies.com
+2025-05-27 22:47:53,637 - Path    : /
+2025-05-27 22:47:53,637 - Size    : 872.00 bytes
+2025-05-27 22:47:53,638 - Freq    : 1
+2025-05-27 22:47:53,639 - Latency : 0.669739 ms
+2025-05-27 22:47:53,639 - Score   : 0.000768
+2025-05-27 22:47:53,640 - Cache State Ending
+2025-05-27 22:47:53,641 - 
+2025-05-27 22:47:53,643 - >>> PROXY → CLIENT (0.000000 ms):
+2025-05-27 22:47:53,644 - �
+2025-05-27 22:47:53,645 - Sent 1512 bytes back to client. Latency => 0.000000

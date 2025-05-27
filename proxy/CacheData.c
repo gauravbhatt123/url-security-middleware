@@ -1,7 +1,7 @@
 #include "Headers.h" 
 #include <stdio.h>
 void print_cache_state(optimisedcache *cache) {
-    printf("-------- Cache State --------\n");
+    printf("Cache State Starting\n");
     printf("Cache Size: %lld / %lld\n", cache->size, cache->capacity);
     printf("Cache Hits: %lld, Cache Misses: %lld\n\n", cache->hit_counter, cache->miss_counter);
 
@@ -15,7 +15,7 @@ void print_cache_state(optimisedcache *cache) {
         printf("  Freq    : %lld\n", curr->frequency);
         printf("  Latency : %.6Lf ms\n", curr->latency);
         printf("  Score   : %.6Lf\n", curr->score);
-        printf("----------------------------\n");
+        printf("Cache State Ending\n");
 
         curr = curr->next;
     }
