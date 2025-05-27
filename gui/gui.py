@@ -19,7 +19,6 @@ except ImportError:
     ReadTimeout = ConnectionError = Exception
 
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 
@@ -34,13 +33,14 @@ logger = logging.getLogger('proxy_logger')
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
+
 class ProxyControlPanel:
     def __init__(self, root):
         self.root = root
         self.root.title("Proxy Server Control Panel")
         self.proxy_process = None
-        self.latencies = []
-        self.proxy_ready = False
+        self.latencies = []       # list of (seq_no, latency_ms)
+        self.next_seq = 1
 
         if requests is None:
             messagebox.showwarning(
@@ -114,14 +114,6 @@ class ProxyControlPanel:
         self.ax.set_ylabel('Latency (ms)')
         self.canvas = FigureCanvasTkAgg(fig, master=bottom)
         self.canvas.get_tk_widget().pack(side='right', fill='both', expand=True)
-        self.canvas.draw()
-
-        self.anim = animation.FuncAnimation(
-            fig,
-            self.update_plot,
-            interval=1000,
-            cache_frame_data=False
-        )
 
     def start_proxy(self):
         if self.proxy_process:
@@ -155,17 +147,21 @@ class ProxyControlPanel:
             self.log_area.insert(tk.END, line)
             self.log_area.see(tk.END)
             logger.info(line.strip())
+
             if 'Address already in use' in line:
                 messagebox.showerror("Bind Error", line.strip())
                 self.stop_proxy()
                 return
+
             if 'Proxy listening on port' in line and not self.proxy_ready:
                 self.proxy_ready = True
                 self.send_button.config(state='normal')
+
             if '-------- Cache State' in line:
                 in_cache = True
                 self.cache_table.delete(*self.cache_table.get_children())
                 continue
+
             if in_cache:
                 if re.match(r'Entry \d+:', line):
                     entry = {}
@@ -183,6 +179,7 @@ class ProxyControlPanel:
                     self.cache_table.insert('', 'end', values=vals)
                 if '--------' in line:
                     in_cache = False
+
         self.stop_proxy()
 
     def stop_proxy(self):
@@ -214,7 +211,18 @@ class ProxyControlPanel:
                 timeout=5
             )
             latency_ms = resp.elapsed.total_seconds() * 1000
-            self.latencies.append(latency_ms)
+
+            # record with a running sequence number
+            self.latencies.append((self.next_seq, latency_ms))
+            self.next_seq += 1
+
+            # trim to last 50
+            if len(self.latencies) > 50:
+                self.latencies = self.latencies[-50:]
+
+            # redraw
+            self.update_plot()
+
             text = (
                 f"Status: {resp.status_code}\n\n"
                 f"Headers:\n{resp.headers}\n\n"
@@ -238,29 +246,28 @@ class ProxyControlPanel:
         except Exception as e:
             messagebox.showerror("Request Error", str(e))
 
-    def update_plot(self, _):
+    def update_plot(self):
         if not self.latencies:
             return
-        # keep last 50
-        if len(self.latencies) > 50:
-            self.latencies = self.latencies[-50:]
 
-        x = np.arange(1, len(self.latencies) + 1)
-        y = np.array(self.latencies)
+        # unpack sequences and values
+        seqs, vals = zip(*self.latencies)
+        x = np.array(seqs)
+        y = np.array(vals)
+
         self.line.set_data(x, y)
 
-        # Dynamic x-limits
-        self.ax.set_xlim(1, max(len(self.latencies), 1))
-        # Dynamic y-limits with 10% padding
-        y_min, y_max = y.min(), y.max()
-        pad = (y_max - y_min) * 0.1 if y_max > y_min else y_max * 0.1
-        self.ax.set_ylim(y_min - pad, y_max + pad)
+        # recompute limits
+        self.ax.relim()
+        self.ax.autoscale_view()
 
-        # Update ticks
+        # update x ticks to show actual request numbers
         self.ax.set_xticks(x)
-        self.ax.set_xticklabels(x)
+        self.ax.set_xticklabels(x, rotation=45, fontsize='small')
 
-        self.canvas.draw()
+        # redraw canvas
+        self.canvas.draw_idle()
+
 
 if __name__ == '__main__':
     root = tk.Tk()

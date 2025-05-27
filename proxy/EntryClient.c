@@ -83,7 +83,7 @@ int main()
     printf("Proxy listening on port %s...\n", PORT);
 
     // Initialize cache
-    cache = createcache(5);
+    cache = createcache(20);
 
     // Main accept loop
     while (1) {
