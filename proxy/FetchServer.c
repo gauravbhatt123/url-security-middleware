@@ -114,11 +114,25 @@ void FetchResServer(const char *host,
             // close socket whether we succeeded or hit timeout/error
             close(serverSocketfd);
 
-            if (curr_bytes_received < 0 &&
-                (errno == EAGAIN || errno == EWOULDBLOCK)) {
-                fprintf(stderr,
+             if (curr_bytes_received < 0) {
+
+                if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                    // Case 1: Timed out
+                    fprintf(stderr,
                         "Attempt %d: recv() timed out after %d seconds\n",
                         attempt, SOCK_TIMEOUT_SECS);
+                } 
+                else if (total_bytes_received == 0) {
+                    // Case 2: Error and nothing was read at all
+                    fprintf(stderr,
+                        "Attempted recv() failed, no data received from the server\n");
+                } 
+                else {
+                    // Case 3: Error after some data was received
+                    fprintf(stderr,
+                        "Attempt recv() failed, partial read failure\n");
+                }
+
                 free(buffer);
                 buffer = NULL;
                 continue;  // try next address or retry
