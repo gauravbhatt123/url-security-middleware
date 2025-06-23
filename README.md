@@ -1,4 +1,4 @@
-# 🔁 Multithreaded Proxy Server with Optimized Caching
+# 🔁 Parallel Cache Proxy
 
 A high-performance, C-based HTTP proxy that handles multiple clients concurrently and speeds up repeat requests with a smart cache—evicting entries by a dynamic score blending access frequency and latency.
 
@@ -25,7 +25,7 @@ This project implements a high-performance, multithreaded HTTP proxy cache in C 
 - [x] Ensure thread-safe access to shared cache via mutex/semaphores.
 - [x] Add access logs and performance monitoring.
 - [x] Make cache/thread count configurable via CLI or config file.
-- [ ] Handle large responses and dynamic content.
+- [x] Handle large responses and dynamic content.
 
 ## SYSTEM ARCHITECTURE
 ![Arch](Arch.png)
