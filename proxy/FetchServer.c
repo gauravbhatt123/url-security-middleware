@@ -8,6 +8,8 @@
 #include <sys/socket.h> // socket(), setsockopt(), SOL_SOCKET, SO_RCVTIMEO, SO_SNDTIMEO
 #include <netdb.h>      // getaddrinfo(), freeaddrinfo()
 #include <unistd.h>     // close()
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
 #define SOCK_TIMEOUT_SECS 5      // seconds for send/recv timeout
 #define MAX_RETRIES       3      // number of full GET retries
@@ -69,8 +71,10 @@ void FetchResServer(const char *host,
             // 4) build & send HTTP GET
             char request[1024];
             snprintf(request, sizeof(request),
-                     "GET /%s HTTP/1.1\r\n"
+                     "GET %s HTTP/1.1\r\n"
                      "Host: %s\r\n"
+                     "User-Agent: curl/8.15.0\r\n"
+                     "Accept: */*\r\n"
                      "Connection: close\r\n\r\n",
                      path, host);
 

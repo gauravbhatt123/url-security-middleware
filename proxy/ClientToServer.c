@@ -34,7 +34,9 @@ void FetchResCache(char *req,
 
     // Extract host and path
     char host[256], path[256] = "/";
-    if (strncmp(url, "http://", 7) == 0) {
+    if (strncmp(url, "https://", 8) == 0) {
+        sscanf(url + 8, "%255[^/]/%255[^\n]", host, path + 1);
+    } else if (strncmp(url, "http://", 7) == 0) {
         sscanf(url + 7, "%255[^/]/%255[^\n]", host, path + 1);
     } else {
         sscanf(url, "%255[^/]/%255[^\n]", host, path + 1);

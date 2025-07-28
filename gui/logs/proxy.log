@@ -192,3 +192,126 @@
 2025-05-27 22:47:53,643 - >>> PROXY → CLIENT (0.000000 ms):
 2025-05-27 22:47:53,644 - �
 2025-05-27 22:47:53,645 - Sent 1512 bytes back to client. Latency => 0.000000
+2025-07-25 21:56:36,376 - Proxy listening on port 3490...
+2025-07-25 21:56:51,137 - Received request ("GET http://alphabet.com/ HTTP/1.1
+2025-07-25 21:56:51,138 - Host: alphabet....")
+2025-07-25 21:56:51,139 - FetchResCache: Host=alphabet.com Path=/
+2025-07-25 21:56:51,139 - Cache MISS, fetching from server
+2025-07-25 21:56:51,141 - Inserted into cache: size=1/20
+2025-07-25 21:56:51,142 - Cache State Starting
+2025-07-25 21:56:51,145 - Cache Size: 1 / 20
+2025-07-25 21:56:51,145 - Cache Hits: 0, Cache Misses: 1
+2025-07-25 21:56:51,146 - 
+2025-07-25 21:56:51,146 - Entry 1:
+2025-07-25 21:56:51,146 - URL     : alphabet.com
+2025-07-25 21:56:51,147 - Path    : /
+2025-07-25 21:56:51,148 - Size    : 351.00 bytes
+2025-07-25 21:56:51,148 - Freq    : 1
+2025-07-25 21:56:51,148 - Latency : 1.087103 ms
+2025-07-25 21:56:51,149 - Score   : 0.003097
+2025-07-25 21:56:51,149 - Cache State Ending
+2025-07-25 21:56:51,151 - 
+2025-07-25 21:56:51,161 - >>> PROXY → CLIENT (1087.103000 ms):
+2025-07-25 21:56:51,162 - HTTP/1.1 301 Moved Permanently
+2025-07-25 21:56:51,162 - Server: nginx
+2025-07-25 21:56:51,163 - Date: Fri, 25 Jul 2025 16:26:49 GMT
+2025-07-25 21:56:51,163 - Content-Type: text/html
+2025-07-25 21:56:51,164 - Content-Length: 162
+2025-07-25 21:56:51,164 - Connection: close
+2025-07-25 21:56:51,165 - Location: https://www.alphabet.com//
+2025-07-25 21:56:51,166 - 
+2025-07-25 21:56:51,166 - <html>
+2025-07-25 21:56:51,167 - <head><title>301 Moved Permanently</title></head>
+2025-07-25 21:56:51,167 - <body>
+2025-07-25 21:56:51,167 - <center><h1>301 Moved Permanently</h1></center>
+2025-07-25 21:56:51,168 - <hr><center>nginx</center>
+2025-07-25 21:56:51,169 - </body>
+2025-07-25 21:56:51,169 - </html>
+2025-07-25 21:56:51,169 - 
+2025-07-25 21:56:51,170 - Sent 351 bytes back to client. Latency => 1.087103
+2025-07-25 21:57:12,847 - Received request ("GET http://example.com/ HTTP/1.1
+2025-07-25 21:57:12,848 - Host: example.co...")
+2025-07-25 21:57:12,849 - FetchResCache: Host=example.com Path=/
+2025-07-25 21:57:12,850 - Cache MISS, fetching from server
+2025-07-25 21:57:12,851 - Inserted into cache: size=2/20
+2025-07-25 21:57:12,851 - Cache State Starting
+2025-07-25 21:57:12,855 - Cache Size: 2 / 20
+2025-07-25 21:57:12,856 - Cache Hits: 0, Cache Misses: 2
+2025-07-25 21:57:12,857 - 
+2025-07-25 21:57:12,858 - Entry 1:
+2025-07-25 21:57:12,859 - URL     : alphabet.com
+2025-07-25 21:57:12,860 - Path    : /
+2025-07-25 21:57:12,860 - Size    : 351.00 bytes
+2025-07-25 21:57:12,861 - Freq    : 1
+2025-07-25 21:57:12,861 - Latency : 1.087103 ms
+2025-07-25 21:57:12,862 - Score   : 0.003097
+2025-07-25 21:57:12,862 - Cache State Ending
+2025-07-25 21:57:12,863 - Entry 2:
+2025-07-25 21:57:12,866 - URL     : example.com
+2025-07-25 21:57:12,866 - Path    : /
+2025-07-25 21:57:12,868 - Size    : 1521.00 bytes
+2025-07-25 21:57:12,868 - Freq    : 1
+2025-07-25 21:57:12,870 - Latency : 0.759583 ms
+2025-07-25 21:57:12,871 - Score   : 0.000499
+2025-07-25 21:57:12,872 - Cache State Ending
+2025-07-25 21:57:12,873 - 
+2025-07-25 21:57:12,875 - >>> PROXY → CLIENT (759.583000 ms):
+2025-07-25 21:57:12,876 - HTTP/1.1 200 OK
+2025-07-25 21:57:12,877 - Content-Type: text/html
+2025-07-25 21:57:12,877 - ETag: "84238dfc8092e5d9c0dac8ef93371a07:1736799080.121134"
+2025-07-25 21:57:12,878 - Last-Modified: Mon, 13 Jan 2025 20:11:20 GMT
+2025-07-25 21:57:12,878 - Cache-Control: max-age=1408
+2025-07-25 21:57:12,879 - Date: Fri, 25 Jul 2025 16:27:12 GMT
+2025-07-25 21:57:12,879 - Content-Length: 1256
+2025-07-25 21:57:12,880 - Connection: close
+2025-07-25 21:57:12,880 - X-N: S
+2025-07-25 21:57:12,881 - 
+2025-07-25 21:57:12,881 - <!doctype html>
+2025-07-25 21:57:12,882 - <html>
+2025-07-25 21:57:12,882 - <head>
+2025-07-25 21:57:12,883 - <title>Example Domain</title>
+2025-07-25 21:57:12,883 - 
+2025-07-25 21:57:12,884 - <meta charset="utf-8" />
+2025-07-25 21:57:12,884 - <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+2025-07-25 21:57:12,886 - <meta name="viewport" content="width=device-width, initial-scale=1" />
+2025-07-25 21:57:12,887 - <style type="text/css">
+2025-07-25 21:57:12,887 - body {
+2025-07-25 21:57:12,888 - background-color: #f0f0f2;
+2025-07-25 21:57:12,889 - margin: 0;
+2025-07-25 21:57:12,890 - padding: 0;
+2025-07-25 21:57:12,891 - font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+2025-07-25 21:57:12,892 - 
+2025-07-25 21:57:12,893 - }
+2025-07-25 21:57:12,893 - div {
+2025-07-25 21:57:12,894 - width: 600px;
+2025-07-25 21:57:12,894 - margin: 5em auto;
+2025-07-25 21:57:12,895 - padding: 2em;
+2025-07-25 21:57:12,896 - background-color: #fdfdff;
+2025-07-25 21:57:12,896 - border-radius: 0.5em;
+2025-07-25 21:57:12,897 - box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);
+2025-07-25 21:57:12,897 - }
+2025-07-25 21:57:12,898 - a:link, a:visited {
+2025-07-25 21:57:12,899 - color: #38488f;
+2025-07-25 21:57:12,899 - text-decoration: none;
+2025-07-25 21:57:12,900 - }
+2025-07-25 21:57:12,900 - @media (max-width: 700px) {
+2025-07-25 21:57:12,901 - div {
+2025-07-25 21:57:12,902 - margin: 0 auto;
+2025-07-25 21:57:12,903 - width: auto;
+2025-07-25 21:57:12,904 - }
+2025-07-25 21:57:12,906 - }
+2025-07-25 21:57:12,907 - </style>
+2025-07-25 21:57:12,907 - </head>
+2025-07-25 21:57:12,908 - 
+2025-07-25 21:57:12,909 - <body>
+2025-07-25 21:57:12,910 - <div>
+2025-07-25 21:57:12,911 - <h1>Example Domain</h1>
+2025-07-25 21:57:12,911 - <p>This domain is for use in illustrative examples in documents. You may use this
+2025-07-25 21:57:12,912 - domain in literature without prior coordination or asking for permission.</p>
+2025-07-25 21:57:12,913 - <p><a href="https://www.iana.org/domains/example">More information...</a></p>
+2025-07-25 21:57:12,914 - </div>
+2025-07-25 21:57:12,914 - </body>
+2025-07-25 21:57:12,915 - </html>
+2025-07-25 21:57:12,915 - 
+2025-07-25 21:57:12,916 - Sent 1521 bytes back to client. Latency => 0.759583
+2025-07-25 22:30:52,623 - Proxy listening on port 3490...
