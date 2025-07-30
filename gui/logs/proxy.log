@@ -315,3 +315,173 @@
 2025-07-25 21:57:12,915 - 
 2025-07-25 21:57:12,916 - Sent 1521 bytes back to client. Latency => 0.759583
 2025-07-25 22:30:52,623 - Proxy listening on port 3490...
+2025-07-31 04:15:51,136 - Proxy listening on port 3040...
+2025-07-31 04:25:03,499 - Proxy listening on port 3040...
+2025-07-31 04:25:20,664 - [DEBUG] Accepted new connection: fd=4
+2025-07-31 04:25:20,666 - [DEBUG] Starting recv loop for fd=4
+2025-07-31 04:25:20,667 - [DEBUG] Received 59 bytes, total: 59
+2025-07-31 04:25:20,668 - [DEBUG] Received buffer: CONNECT httpbin.org:443 HTTP/1.1
+2025-07-31 04:25:20,668 - Host: httpbin.org:443
+2025-07-31 04:25:20,669 - 
+2025-07-31 04:25:20,669 - 
+2025-07-31 04:25:20,670 - [DEBUG] Parsed method: CONNECT, url: httpbin.org:443, proto: HTTP/1.1
+2025-07-31 04:25:20,670 - [DEBUG] Handling CONNECT (MITM)...
+2025-07-31 04:25:20,670 - Certificate request self-signature ok
+2025-07-31 04:25:20,671 - subject=C=US, ST=State, L=City, O=Organization, OU=Organizational Unit, CN=httpbin.org
+2025-07-31 04:25:20,671 - Certificate request self-signature ok
+2025-07-31 04:25:20,671 - subject=CN=httpbin.org
+2025-07-31 04:25:20,672 - [DEBUG] certfile: proxy/httpbin.org.crt
+2025-07-31 04:25:20,672 - [DEBUG] keyfile: proxy/httpbin.org.key
+2025-07-31 04:25:20,674 - [DEBUG] Loading certificate...
+2025-07-31 04:25:20,675 - [DEBUG] Loading private key...
+2025-07-31 04:25:20,675 - [DEBUG] Starting SSL_accept...
+2025-07-31 04:25:20,676 - [DEBUG] SSL_accept result: 1
+2025-07-31 04:25:20,676 - [DEBUG] Read 145 bytes from client, total: 145
+2025-07-31 04:25:20,677 - [DEBUG] HTTPS Request length: 145
+2025-07-31 04:25:20,677 - [DEBUG] HTTPS Request: GET /get HTTP/1.1
+2025-07-31 04:25:20,678 - Host: httpbin.org
+2025-07-31 04:25:20,679 - User-Agent: python-requests/2.32.4
+2025-07-31 04:25:20,680 - Accept-Encoding: gzip, deflate
+2025-07-31 04:25:20,681 - Accept: */*
+2025-07-31 04:25:20,681 - Connection: keep-alive
+2025-07-31 04:25:20,682 - 
+2025-07-31 04:25:20,682 - 
+2025-07-31 04:25:20,683 - [DEBUG] HTTPS Parsed method: GET, url: /get, proto: HTTP/1.1
+2025-07-31 04:25:20,693 - [DEBUG] HTTPS Host=httpbin.org Path=/get
+2025-07-31 04:25:20,695 - [DEBUG] HTTPS Cache MISS, fetching from server
+2025-07-31 04:25:20,696 - [DEBUG] HTTPS Response size: 478.000000, latency: 0.816814
+2025-07-31 04:25:20,697 - [DEBUG] First 200 chars of response: HTTP/1.1 200 OK
+2025-07-31 04:25:20,698 - Date: Wed, 30 Jul 2025 22:55:20 GMT
+2025-07-31 04:25:20,698 - Content-Type: application/json
+2025-07-31 04:25:20,699 - Content-Length: 253
+2025-07-31 04:25:20,700 - Connection: close
+2025-07-31 04:25:20,701 - Server: gunicorn/19.9.0
+2025-07-31 04:25:20,701 - Access-Control-Allow-Origin: *
+2025-07-31 04:25:20,703 - Access-Control-Al
+2025-07-31 04:25:20,703 - [DEBUG] HTTPS response cached successfully
+2025-07-31 04:25:20,704 - === Cache State ===
+2025-07-31 04:25:20,704 - Size  : 1 / 20
+2025-07-31 04:25:20,707 - Hits  : 0
+2025-07-31 04:25:20,708 - Misses: 1
+2025-07-31 04:25:20,709 - Entry 1: httpbin.org/get  size=478  freq=1  score=0.002
+2025-07-31 04:25:20,709 - ===================
+2025-07-31 04:25:20,712 - 
+2025-07-31 04:25:20,713 - [DEBUG] Sent HTTPS response to client
+2025-07-31 04:29:06,354 - [DEBUG] Accepted new connection: fd=5
+2025-07-31 04:29:06,381 - [DEBUG] Starting recv loop for fd=5
+2025-07-31 04:29:06,383 - [DEBUG] Received 57 bytes, total: 57
+2025-07-31 04:29:06,384 - [DEBUG] Received buffer: CONNECT google.com:443 HTTP/1.1
+2025-07-31 04:29:06,385 - Host: google.com:443
+2025-07-31 04:29:06,386 - 
+2025-07-31 04:29:06,389 - 
+2025-07-31 04:29:06,391 - [DEBUG] Parsed method: CONNECT, url: google.com:443, proto: HTTP/1.1
+2025-07-31 04:29:06,392 - [DEBUG] Handling CONNECT (MITM)...
+2025-07-31 04:29:06,392 - Certificate request self-signature ok
+2025-07-31 04:29:06,393 - subject=C=US, ST=State, L=City, O=Organization, OU=Organizational Unit, CN=google.com
+2025-07-31 04:29:06,393 - Certificate request self-signature ok
+2025-07-31 04:29:06,394 - subject=CN=google.com
+2025-07-31 04:29:06,394 - [DEBUG] certfile: proxy/google.com.crt
+2025-07-31 04:29:06,395 - [DEBUG] keyfile: proxy/google.com.key
+2025-07-31 04:29:06,396 - [DEBUG] Loading certificate...
+2025-07-31 04:29:06,396 - [DEBUG] Loading private key...
+2025-07-31 04:29:06,397 - [DEBUG] Starting SSL_accept...
+2025-07-31 04:29:06,398 - [DEBUG] SSL_accept result: 1
+2025-07-31 04:29:06,399 - [DEBUG] Read 141 bytes from client, total: 141
+2025-07-31 04:29:06,399 - [DEBUG] HTTPS Request length: 141
+2025-07-31 04:29:06,400 - [DEBUG] HTTPS Request: GET / HTTP/1.1
+2025-07-31 04:29:06,400 - Host: google.com
+2025-07-31 04:29:06,401 - User-Agent: python-requests/2.32.4
+2025-07-31 04:29:06,402 - Accept-Encoding: gzip, deflate
+2025-07-31 04:29:06,403 - Accept: */*
+2025-07-31 04:29:06,404 - Connection: keep-alive
+2025-07-31 04:29:06,406 - 
+2025-07-31 04:29:06,406 - 
+2025-07-31 04:29:06,407 - [DEBUG] HTTPS Parsed method: GET, url: /, proto: HTTP/1.1
+2025-07-31 04:29:06,408 - [DEBUG] HTTPS Host=google.com Path=/
+2025-07-31 04:29:06,408 - [DEBUG] HTTPS Cache MISS, fetching from server
+2025-07-31 04:29:06,409 - [DEBUG] HTTPS Response size: 792.000000, latency: 0.125744
+2025-07-31 04:29:06,409 - [DEBUG] First 200 chars of response: HTTP/1.1 301 Moved Permanently
+2025-07-31 04:29:06,410 - Location: http://www.google.com/
+2025-07-31 04:29:06,411 - Content-Type: text/html; charset=UTF-8
+2025-07-31 04:29:06,411 - Content-Security-Policy-Report-Only: object-src 'none';base-uri 'self';script-src 'nonce-8n477
+2025-07-31 04:29:06,412 - [DEBUG] HTTPS response cached successfully
+2025-07-31 04:29:06,413 - === Cache State ===
+2025-07-31 04:29:06,413 - Size  : 2 / 20
+2025-07-31 04:29:06,414 - Hits  : 0
+2025-07-31 04:29:06,415 - Misses: 2
+2025-07-31 04:29:06,415 - Entry 1: httpbin.org/get  size=478  freq=1  score=0.002
+2025-07-31 04:29:06,416 - Entry 2: google.com/  size=792  freq=1  score=0.000
+2025-07-31 04:29:06,418 - ===================
+2025-07-31 04:29:06,423 - 
+2025-07-31 04:29:06,424 - [DEBUG] Sent HTTPS response to client
+2025-07-31 04:29:06,424 - [DEBUG] Accepted new connection: fd=4
+2025-07-31 04:29:06,426 - [DEBUG] Starting recv loop for fd=4
+2025-07-31 04:29:06,426 - [DEBUG] Received 166 bytes, total: 166
+2025-07-31 04:29:06,427 - [DEBUG] Received buffer: GET http://www.google.com/ HTTP/1.1
+2025-07-31 04:29:06,427 - Host: www.google.com
+2025-07-31 04:29:06,428 - User-Agent: python-requests/2.32.4
+2025-07-31 04:29:06,428 - Accept-Encoding: gzip, deflate
+2025-07-31 04:29:06,429 - Accept: */*
+2025-07-31 04:29:06,430 - Connection: keep-alive
+2025-07-31 04:29:06,430 - 
+2025-07-31 04:29:06,431 - 
+2025-07-31 04:29:06,431 - [DEBUG] Parsed method: GET, url: http://www.google.com/, proto: HTTP/1.1
+2025-07-31 04:29:06,432 - [DEBUG] Handling plain HTTP...
+2025-07-31 04:29:06,432 - === Cache State ===
+2025-07-31 04:29:06,436 - Size  : 3 / 20
+2025-07-31 04:29:06,436 - Hits  : 0
+2025-07-31 04:29:06,438 - Misses: 3
+2025-07-31 04:29:06,439 - Entry 1: httpbin.org/get  size=478  freq=1  score=0.002
+2025-07-31 04:29:06,440 - Entry 2: google.com/  size=792  freq=1  score=0.000
+2025-07-31 04:29:06,441 - Entry 3: www.google.com/  size=21085  freq=1  score=0.000
+2025-07-31 04:29:06,443 - ===================
+2025-07-31 04:29:06,449 - 
+2025-07-31 04:29:06,450 - >>> PROXY → CLIENT (206.043000 ms):
+2025-07-31 04:29:06,451 - HTTP/1.1 200 OK
+2025-07-31 04:29:06,452 - Date: Wed, 30 Jul 2025 22:59:06 GMT
+2025-07-31 04:29:06,453 - Expires: -1
+2025-07-31 04:29:06,454 - Cache-Control: private, max-age=0
+2025-07-31 04:29:06,454 - Content-Type: text/html; charset=ISO-8859-1
+2025-07-31 04:29:06,456 - Content-Security-Policy-Report-Only: object-src 'none';base-uri 'self';script-src 'nonce-Q7BZ7C4D7QdjmrhtlH2Xpg' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp
+2025-07-31 04:29:06,456 - P3P: CP="This is not a P3P policy! See g.co/p3phelp for more info."
+2025-07-31 04:29:06,457 - Server: gws
+2025-07-31 04:29:06,457 - X-XSS-Protection: 0
+2025-07-31 04:29:06,458 - X-Frame-Options: SAMEORIGIN
+2025-07-31 04:29:06,459 - Set-Cookie: AEC=AVh_V2htiRRlPgp_f1joipTpY5c7fZbmy883bld-083elCN_5F99DbWCfQ; expires=Mon, 26-Jan-2026 22:59:06 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=lax
+2025-07-31 04:29:06,459 - Set-Cookie: NID=525=c3FdLLU1wu9oylqHWUYGBgNPSNqnzxWVlhGORl9Nf6-9XNp7Kw9PHyNAkzUT-knkgjo20oT3qC1Z8Z3fER-3gdop8pzff3-UmyLG6PPB1Y2xIb3fWRhYzsotyUiHW42gj2wh2NNu_TtibVjyn6AjOabRJ3TRcKqGIis4DhwQlJUWHawMR3VBe4prjcJlRZUwle8gsd8Wwt-vAhCaA0U; expires=Thu, 29-Jan-2026 22:59:06 GMT; path=/; domain=.google.com; HttpOnly
+2025-07-31 04:29:06,461 - Accept-Ranges: none
+2025-07-31 04:29:06,462 - Vary: Accept-Encoding
+2025-07-31 04:29:06,462 - Connection: close
+2025-07-31 04:29:06,463 - Transfer-Encoding: chunked
+2025-07-31 04:29:06,463 - 
+2025-07-31 04:29:06,464 - 242b
+2025-07-31 04:29:06,465 - <!doctype html><html itemscope="" itemtype="http://schema.org/WebPage" lang="en-IN"><head><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><meta content="/images/branding/googleg/1x/googleg_standard_color_128dp.png" itemprop="image"><title>Google</title><script nonce="Q7BZ7C4D7QdjmrhtlH2Xpg">(function(){var _g={kEI:'uqOKaO7NDe2nseMP1cb-gAE',kEXPI:'0,18168,184686,2,3497457,636,435,538661,48791,30022,16105,78219,161053,105524,219811,6600,2,63631,11106,5230575,36812643,25366949,14110,22917,34214,8038,6756,23879,7041,2097,4600,328,6225,1116,63049,15049,8205,3292,4134,30379,28334,48317,5895,352,18880,5870,1908,5806,5773,15031,4973,1641,5967,3050,2,13472,3261,2990,35,3420,2117,710,37,2674,7946,12107,5683,3604,591,493,12721,3967,2731,6430,8838,633,646,680,3542,4,4,4811,2408,3874,1642,95,1857,3,1959,1020,1,3459,2,1327,2777,88,7,1370,601,1032,939,6,633,716,3790,353,379,2526,3,6834,935,1711,103,4,1,320,1818,1617,1668,667,27,3,7025,4622,3,2,2,2,1331,4916,4,111,2990,2714,690,4562,2851,210,1280,55,272,81,183,2,1,109,1271,31,104,3071,821,520,2126,44,669,979,1023,112,2,99,3,433,746,66,5,1,506,175,128,956,21,697,5,9,435,966,312,18,6,977,2040,562,908,724,251,1138,482,9,1,300,2397,544,2,240,4,637,831,2,662,130,9,905,395,559,1,2,39,712,132,27,493,350,2,1,3,2,10,125,2,492,147,3,574,19,455,3,12,1,57,1190,189,235,149,156,43,1669,3,3,602,155,12,29,107,15,873,3,2136,23,772,1921,1524,1016,207,668,1,3,2,112,142,4,221,132,4,4,389,3,2,2,2,25,746,107,117,82,4,432,4,516,399,24,242,3,74,160,87,117,45,242,25,97,115,376,4,3,834,308,389,196,348,42,3,211,31,30,144,18,353,200,3,290,304,186,356,22,5,92,1550,15,54,257,1,192,45,196,607,691,3,21,12,5,201,19,891,15,2,94,7,2,94,615,188,92,266,70,482,134,1289,61,54,5,53,590,161,191,356,102,1,32,2,70,269,586,41,551,22,319,712,181,817,331,6,7,20784408,416080,5,2253,739,4,2701,259,3,1307,1930,796,4458,2,1562,3,206,2232,3,1928,62,41,690,3149,149,58,142,2,2,433,50,185,375,450,928,8488410,28615,151246',kBL:'jSDP',kOPI:89978449};(function(){var a;((a=window.google)==null?0:a.stvsc)?google.kEI=_g.kEI:window.google=_g;}).call(this);})();(function(){google.sn='webhp';google.kHL='en-IN';})();(function(){
+2025-07-31 04:29:06,468 - var g=this||self;function k(){return window.google&&window.google.kOPI||null};var l,m=[];function n(a){for(var b;a&&(!a.getAttribute||!(b=a.getAttribute("eid")));)a=a.parentNode;return b||l}function p(a){for(var b=null;a&&(!a.getAttribute||!(b=a.getAttribute("leid")));)a=a.parentNode;return b}function q(a){/^http:/i.test(a)&&window.location.protocol==="https:"&&(google.ml&&google.ml(Error("a"),!1,{src:a,glmm:1}),a="");return a}
+2025-07-31 04:29:06,470 - function r(a,b,d,c,h){var e="";b.search("&ei=")===-1&&(e="&ei="+n(c),b.search("&lei=")===-1&&(c=p(c))&&(e+="&lei="+c));var f=b.search("&cshid=")===-1&&a!=="slh";c="&zx="+Date.now().toString();g._cshid&&f&&(c+="&cshid="+g._cshid);(d=d())&&(c+="&opi="+d);return"/"+(h||"gen_204")+"?atyp=i&ct="+String(a)+"&cad="+(b+e+c)};l=google.kEI;google.getEI=n;google.getLEI=p;google.ml=function(){return null};google.log=function(a,b,d,c,h,e){e=e===void 0?k:e;d||(d=r(a,b,e,c,h));if(d=q(d)){a=new Image;var f=m.length;m[f]=a;a.onerror=a.onload=a.onabort=function(){delete m[f]};a.src=d}};google.logUrl=function(a,b){b=b===void 0?k:b;return r("",a,b)};}).call(this);(function(){google.y={};google.sy={};function e(a,b,c){if(a)var d=a.id;else{do d=Math.random();while(c[d])}c[d]=[a,b]}var f;(f=google).x||(f.x=function(a,b){e(a,b,google.y)});var g;(g=google).sx||(g.sx=function(a,b){e(a,b,google.sy)});google.lm=[];var h;(h=google).plm||(h.plm=function(a){google.lm.push.apply(google.lm,a)});google.lq=[];var k;(k=google).load||(k.load=function(a,b,c){google.lq.push([[a],b,c])});var l;(l=google).loadAll||(l.loadAll=function(a,b){google.lq.push([a,b])});google.bx=!1;var m;(m=google).lx||(m.lx=function(){});var n=[],p;(p=google).fce||(p.fce=function(a,b,c,d){n.push([a,b,c,d])});google.qce=n;google.adl=[];}).call(this);google.f={};(function(){
+2025-07-31 04:29:06,472 - document.documentElement.addEventListener("submit",function(b){var a;if(a=b.target){var c=a.getAttribute("data-submitfalse");a=c==="1"||c==="q"&&!a.elements.q.value?!0:!1}else a=!1;a&&(b.preventDefault(),b.stopPropagation())},!0);document.documentElement.addEventListener("click",function(b){var a;a:{for(a=b.target;a&&a!==document.documentElement;a=a.parentElement)if(a.tagName==="A"){a=a.getAttribute("data-nohref")==="1";break a}a=!1}a&&b.preventDefault()},!0);}).call(this);</script><style>#gbar,#guser{font-size:13px;padding-top:1px !important;}#gbar{height:22px}#guser{padding-bottom:7px !important;text-align:right}.gbh,.gbd{border-top:1px solid #c9d7f1;font-size:1px}.gbh{height:0;position:absolute;top:24px;width:100%}@media all{.gb1{height:22px;margin-right:.5em;vertical-align:top}#gbar{float:left}}a.gb1,a.gb4{text-decoration:underline !important}a.gb1,a.gb4{color:#00c !important}.gbi .gb4{color:#dd8e27 !important}.gbf .gb4{color:#900 !important}
+2025-07-31 04:29:06,475 - </style><style>body,td,a,p,.h{font-family:sans-serif}body{margin:0;overflow-y:scroll}#gog{padding:3px 8px 0}td{line-height:.8em}.gac_m td{line-height:17px}form{margin-bottom:20px}.h{color:#1967d2}em{font-weight:bold;font-style:normal}.lst{height:25px;width:496px}.gsfi,.lst{font:18px sans-serif}.gsfs{font:17px sans-serif}.ds{display:inline-box;display:inline-block;margin:3px 0 4px;margin-left:4px}input{font-family:inherit}body{background:#fff;color:#1f1f1f}a{color:#681da8;text-decoration:none}a:hover,a:active{text-decoration:underline}.fl a{color:#1967d2}a:visited{color:#681da8}.sblc{padding-top:5px}.sblc a{display:block;margin:2px 0;margin-left:13px;font-size:11px}.lsbb{background:#f8f9fa;border:solid 1px;border-color:#dadce0 #70757a #70757a #dadce0;height:30px}.lsbb{display:block}#WqQANb a{display:inline-block;margin:0 12px}.lsb{background:url(/images/nav_logo229.png) 0 -261px repeat-x;color:#1f1f1f;border:none;cursor:pointer;height:30px;margin:0;outline:0;font:15px sans-serif;vertical-align:top}.lsb:active{background:#dadce0}.lst:focus{outline:none}</style><script nonce="Q7BZ7C4D7QdjmrhtlH2Xpg">(function(){window.google.erd={jsr:1,bv:2262,de:true,dpf:'3qw6_R_4810TRpvkdjWlewvIL0KHcV0VKyAikqQd1c0'};
+2025-07-31 04:29:06,476 - var g=this||self;var k,l=(k=g.mei)!=null?k:1,m,p=(m=g.diel)!=null?m:0,q,r=(q=g.sdo)!=null?q:!0,t=0,u,w=google.erd,x=w.jsr;google.ml=function(a,b,d,n,e){e=e===void 0?2:e;b&&(u=a&&a.message);d===void 0&&(d={});d.cad="ple_"+google.ple+".aple_"+google.aple;if(google.dl)return google.dl(a,e,d,!0),null;b=d;if(x<0){window.console&&console.error(a,b);if(x===-2)throw a;b=!1}else b=!a||!a.message||a.message==="Error loading script"||t>=l&&!n?!1:!0;if(!b)return null;t++;d=d||{};b=encodeURIComponent;var c="/gen_204?atyp=i&ei="+b(google.kEI);google.kEXPI&&(c+="&jexpid="+b(google.kEXPI));c+="&srcpg="+b(google.sn)+"&jsr="+b(w.jsr)+
+2025-07-31 04:29:06,478 - "&bver="+b(w.bv);w.dpf&&(c+="&dpf="+b(w.dpf));var f=a.lineNumber;f!==void 0&&(c+="&line="+f);var h=a.fileName;h&&(h.indexOf("-extension:/")>0&&(e=3),c+="&script="+b(h),f&&h===window.location.href&&(f=document.documentElement.outerHTML.split("\n")[f],c+="&cad="+b(f?f.substring(0,300):"No script found.")));google.ple&&google.ple===1&&(e=2);c+="&jsel="+e;for(var v in d)c+="&",c+=b(v),c+="=",c+=b(d[v]);c=c+"&emsg="+b(a.name+": "+a.message);c=c+"&jsst="+b(a.stack||"N/A");c.length>=12288&&(c=c.substring(0,12288));a=c;n||google.log(0,"",a);return a};window.onerror=function(a,b,d,n,e){u!==a&&(a=e instanceof Error?e:Error(a),d===void 0||"lineNumber"in a||(a.lineNumber=d),b===void 0||"fileName"in a||(a.fileName=b),google.ml(a,!1,void 0,!1,a.name==="SyntaxError"||a.message.substring(0,11)==="SyntaxError"||a.message.indexOf("Script error")!==-1?3:p));u=null;r&&t>=l&&(window.onerror=null)};})();</script></head><body bgcolor="#fff"><script nonce="Q7BZ7C4D7QdjmrhtlH2Xpg">(function(){var src='/images/nav_logo229.png';var iesg=false;document.body.onload = function(){window.n && window.n();if (document.images){new Image().src=src;}
+2025-07-31 04:29:06,480 - if (!iesg){document.f&&document.f.q.focus();document.gbqf&&document.gbqf.q.focus();}
+2025-07-31 04:29:06,481 - }
+2025-07-31 04:29:06,482 - })();</script><div id="mngb"><div id=gbar><nobr><b class=gb1>Search</b> <a class=gb1 href="https://www.google.com/imghp?hl=en&tab=wi">Images</a> <a class=gb1 href="http://maps.google.co.in/maps?hl=en&tab=wl">Maps</a> <a class=gb1 href="https://play.google.com/?hl=en&tab=w8">Play</a> <a class=gb1 href="https://www.youtube.com/?tab=w1">YouTube</a> <a class=gb1 href="https://news.google.com/?tab=wn">News</a> <a class=gb1 href="https://mail.google.com/mail/?tab=wm">Gmail</a> <a class=gb1 href="https://drive.google.com/?tab=wo">Drive</a> <a class=gb1 style="text-decoration:none" href="https://www.google.co.in/intl/en/about/products?tab=wh"><u>More</u> &raquo;</a></nobr></div><div id=guser width=100%><nobr><span id=gbn class=gbi></span><span id=gbf class=gbf></span><span id=gbe></span><a href="http://www.google.co.in/history/optout?hl=en" class=gb4>Web History</a> | <a  href="/preferences?hl=en" class=gb4>Settings</a> | <a target=_top id=gb_70 href="https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=http://www.google.com/&ec=GAZAAQ" class=gb4>Sign in</a></nobr></div><div class=gbh style=left:0></div><div class=gbh style=right:0></div></div><center><br clear="all" id="lgpd"><div id="XjhHGf"><img alt="Google" height="92" src="/images/branding/googlelogo/1x/googlelogo_white_background
+2025-07-31 04:29:06,483 - 74
+2025-07-31 04:29:06,485 - _color_272x92dp.png" style="padding:28px 0 14px" width="272" id="hplogo"><br><br></div><form action="/search" name="
+2025-07-31 04:29:06,487 - 2955
+2025-07-31 04:29:06,489 - f"><table cellpadding="0" cellspacing="0"><tr valign="top"><td width="25%">&nbsp;</td><td align="center" nowrap=""><input name="ie" value="ISO-8859-1" type="hidden"><input value="en-IN" name="hl" type="hidden"><input name="source" type="hidden" value="hp"><input name="biw" type="hidden"><input name="bih" type="hidden"><div class="ds" style="height:32px;margin:4px 0"><input class="lst" style="margin:0;padding:5px 8px 0 6px;vertical-align:top;color:#1f1f1f" autocomplete="off" value="" title="Google Search" maxlength="2048" name="q" size="57"></div><br style="line-height:0"><span class="ds"><span class="lsbb"><input class="lsb" value="Google Search" name="btnG" type="submit"></span></span><span class="ds"><span class="lsbb"><input class="lsb" id="tsuid_uqOKaO7NDe2nseMP1cb-gAE_1" value="I'm Feeling Lucky" name="btnI" type="submit"><script nonce="Q7BZ7C4D7QdjmrhtlH2Xpg">(function(){var id='tsuid_uqOKaO7NDe2nseMP1cb-gAE_1';document.getElementById(id).onclick = function(){if (this.form.q.value){this.checked = 1;if (this.form.iflsig)this.form.iflsig.disabled = false;}
+2025-07-31 04:29:06,495 - else top.location='/doodles/';};})();</script><input value="AOw8s4IAAAAAaIqxyuhtlbEWJgV8x19nW0CWGTMB5Ajg" name="iflsig" type="hidden"></span></span></td><td class="fl sblc" align="left" nowrap="" width="25%"><a href="/advanced_search?hl=en-IN&amp;authuser=0">Advanced search</a></td></tr></table><input id="gbv" name="gbv" type="hidden" value="1"><script nonce="Q7BZ7C4D7QdjmrhtlH2Xpg">(function(){var a,b="1";if(document&&document.getElementById)if(typeof XMLHttpRequest!="undefined")b="2";else if(typeof ActiveXObject!="undefined"){var c,d,e=["MSXML2.XMLHTTP.6.0","MSXML2.XMLHTTP.3.0","MSXML2.XMLHTTP","Microsoft.XMLHTTP"];for(c=0;d=e[c++];)try{new ActiveXObject(d),b="2"}catch(h){}}a=b;if(a=="2"&&location.search.indexOf("&gbv=2")==-1){var f=google.gbvu,g=document.getElementById("gbv");g&&(g.value=a);f&&window.setTimeout(function(){location.href=f},0)};}).call(this);</script></form><div style="font-size:83%;min-height:3.5em"><br><div id="gws-output-pages-elements-homepage_additional_languages__als"><style>#gws-output-pages-elements-homepage_additional_languages__als{font-size:small;margin-bottom:24px}#SIvCob{color:#545454;display:inline-block;line-height:28px;}#SIvCob a{}.H6sW5{display:inline-block;margin:0 2px;white-space:nowrap}.z4hgWe{display:inline-block;margin:0 2px}</style><div id="SIvCob">Google offered in:  <a href="http://www.google.com/setprefs?sig=0_8V67LHx0Qy-HycnQ7v4wPZ3gjJE%3D&amp;hl=hi&amp;source=homepage&amp;sa=X&amp;ved=0ahUKEwjukqHG1-WOAxXtU2wGHVWjHxAQ2ZgBCAY">&#2361;&#2367;&#2344;&#2381;&#2342;&#2368;</a>    <a href="http://www.google.com/setprefs?sig=0_8V67LHx0Qy-HycnQ7v4wPZ3gjJE%3D&amp;hl=bn&amp;source=homepage&amp;sa=X&amp;ved=0ahUKEwjukqHG1-WOAxXtU2wGHVWjHxAQ2ZgBCAc">&#2476;&#2494;&#2434;&#2482;&#2494;</a>    <a href="http://www.google.com/setprefs?sig=0_8V67LHx0Qy-HycnQ7v4wPZ3gjJE%3D&amp;hl=te&amp;source=homepage&amp;sa=X&amp;ved=0ahUKEwjukqHG1-WOAxXtU2wGHVWjHxAQ2ZgBCAg">&#3108;&#3142;&#3122;&#3137;&#3095;&#3137;</a>    <a href="http://www.google.com/setprefs?sig=0_8V67LHx0Qy-HycnQ7v4wPZ3gjJE%3D&amp;hl=mr&amp;source=homepage&amp;sa=X&amp;ved=0ahUKEwjukqHG1-WOAxXtU2wGHVWjHxAQ2ZgBCAk">&#2350;&#2352;&#2366;&#2336;&#2368;</a>    <a href="http://www.google.com/setprefs?sig=0_8V67LHx0Qy-HycnQ7v4wPZ3gjJE%3D&amp;hl=ta&amp;source=homepage&amp;sa=X&amp;ved=0ahUKEwjukqHG1-WOAxXtU2wGHVWjHxAQ2ZgBCAo">&#2980;&#2990;&#3007;&#2996;&#3021;</a>    <a href="http://www.google.com/setprefs?sig=0_8V67LHx0Qy-HycnQ7v4wPZ3gjJE%3D&amp;hl=gu&amp;source=homepage&amp;sa=X&amp;ved=0ahUKEwjukqHG1-WOAxXtU2wGHVWjHxAQ2ZgBCAs">&#2711;&#2753;&#2716;&#2736;&#2750;&#2724;&#2752;</a>    <a href="http://www.google.com/setprefs?sig=0_8V67LHx0Qy-HycnQ7v4wPZ3gjJE%3D&amp;hl=kn&amp;source=homepage&amp;sa=X&amp;ved=0ahUKEwjukqHG1-WOAxXtU2wGHVWjHxAQ2ZgBCAw">&#3221;&#3240;&#3277;&#3240;&#3233;</a>    <a href="http://www.google.com/setprefs?sig=0_8V67LHx0Qy-HycnQ7v4wPZ3gjJE%3D&amp;hl=ml&amp;source=homepage&amp;sa=X&amp;ved=0ahUKEwjukqHG1-WOAxXtU2wGHVWjHxAQ2ZgBCA0">&#3374;&#3378;&#3375;&#3390;&#3379;&#3330;</a>    <a href="http://www.google.com/setprefs?sig=0_8V67LHx0Qy-HycnQ7v4wPZ3gjJE%3D&amp;hl=pa&amp;source=homepage&amp;sa=X&amp;ved=0ahUKEwjukqHG1-WOAxXtU2wGHVWjHxAQ2ZgBCA4">&#2602;&#2672;&#2588;&#2622;&#2604;&#2624;</a>  </div></div></div><span id="footer"><div style="font-size:10pt"><div style="margin:19px auto;text-align:center" id="WqQANb"><a href="/intl/en/ads/">Advertising</a><a href="http://www.google.co.in/services/">Business Solutions</a><a href="/intl/en/about.html">About Google</a><a href="http://www.google.com/setprefdomain?prefdom=IN&amp;prev=http://www.google.co.in/&amp;sig=K_cJ-XzExp1NDW0BIGm7nNO8jKk5k%3D">Google.co.in</a></div></div><p style="font-size:8pt;color:#636363">&copy; 2025 - <a href="/intl/en/policies/privacy/">Privacy</a> - <a href="/intl/en/policies/terms/">Terms</a></p></span></center><script nonce="Q7BZ7C4D7QdjmrhtlH2Xpg">(function(){window.google.cdo={height:757,width:1440};(function(){var a=window.innerWidth,b=window.innerHeight;if(!a||!b){var c=window.document,d=c.compatMode=="CSS1Compat"?c.documentElement:c.body;a=d.clientWidth;b=d.clientHeight}if(a&&b&&(a!=google.cdo.width||b!=google.cdo.height)){var e=google,f=e.log,g="/client_204?&atyp=i&biw="+a+"&bih="+b+"&ei="+google.kEI,h="",k=window.google&&window.google.kOPI||null;k&&(h+="&opi="+k);f.call(e,"","",g+h)};}).call(this);})();(function(){google.xjs={basecomb:'/xjs/_/js/k\x3dxjs.hp.en.XYeJdOEmz6Q.es5.O/ck\x3dxjs.hp.GXPOlmB2wSk.L.X.O/am\x3dhAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAACAASBCoAAAAACYIAAAAAAAAAEAAAAAAACAAgAAMAIAEIAQAQQAAAIECAAACgAmGQDGgQAAAQKACgRADkDpAAAAABBAABBAAAAMACgAAAAgAQDAAAAACOAEAAAAwAAIjwMCAAAAAAAIiAUAAQAAAAAAIB4B/d\x3d1/ed\x3d1/dg\x3d0/ujg\x3d1/rs\x3dACT90oESUFaFSU8ke7TPqnh2ILsqnvQYcQ',basecss:'/xjs/_/ss/k\x3dxjs.hp.GXPOlmB2wSk.L.X.O/am\x3dhAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABAACAASBCoAAAAAAYIAAAAAAAAAAAAAAAAACAAAAAIAIAEIAQAQQAAAIECAAACgAmAQAGAAAAAAKACgRADkDpAAAAABBAABBAAAAMACgAAAAgAQDAAAAACGAEAAAAAAAAgAAAAAAAAAAIiA/rs\x3dACT90oHoMvxt8FNBPOI2j32a6HwfdeW7Jw',basejs:'/xjs/_/js/k\x3dxjs.hp.en.XYeJdOEmz6Q.es5.O/am\x3dAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAEAAAAAAAAAAgAAEAIAEIAQAQQAAAAAAAAACAAAGADAgQAAAQAAAAAADgAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAOAAAAAAwAAIjwMCAAAAAAAIiAUAAQAAAAAAIB4B/dg\x3d0/rs\x3dACT90oFDqZgVg71JQAGtkRp9HnYeh2u3Lg',excm:[]};})();(function(){var u='/xjs/_/js/k\x3dxjs.hp.en.XYeJdOEmz6Q.es5.O/am\x3dAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAEAAAAAAAAAAgAAEAIAEIAQAQQAAAAAAAAACAAAGADAgQAAAQAAAAAADgAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAOAAAAAAwAAIjwMCAAAAAAAIiAUAAQAAAAAAIB4B/d\x3d1/ed\x3d1/dg\x3d3/rs\x3dACT90oFDqZgVg71JQAGtkRp9HnYeh2u3Lg/m\x3dsb_he,d';var st=1;var amd=1000;var mmd=0;var pod=true;var pop=true;var povp=false;var fp='';
+2025-07-31 04:29:06,498 - var e=this||self;function f(){var b,a,d;if(a=b=(a=window.google)==null?void 0:(d=a.ia)==null?void 0:d.r.B2Jtyd)a=b.m,a=a===1||a===5||a===6;return a&&b.cbfd!=null&&b.cbvi!=null?b:void 0};function g(){var b=[u];if(!google.dp){for(var a=0;a<b.length;a++){var d=b[a],c=document.createElement("link");c.as="script";c.href=d;c.rel="preload";document.body.appendChild(c)}google.dp=!0}};google.ps===void 0&&(google.ps=[]);function h(){var b=u,a=function(){};google.lx=google.stvsc?a:function(){k(b);google.lx=a};google.bx||google.lx()}function l(b,a){a&&(b.src=a);fp&&google.caft&&google.caft(function(){b.fetchPriority=fp});var d=b.onload;b.onload=function(c){d&&d(c);google.ps=google.ps.filter(function(G){return b!==G})};google.ps.push(b);document.body.appendChild(b)}google.as=l;function k(b){google.timers&&google.timers.load&&google.tick&&google.tick("load","xjsls");var a=document.createElement("script");a.onerror=function(){google.ple=1};a.onload=function(){google.ple=0};google.xjsus=void 0;l(a,b);google.aple=-1;google.dp=!0};function m(b){var a=b.getAttribute("jscontroller");return(a==="UBXHI"||a==="R3fhkb"||a==="TSZEqd")&&b.hasAttribute("data-src")}function n(){for(var b=document.getElementsByTagName("img"),a=0,d=b.length;a<d;a++){var c=b[a];if(c.hasAttribute("data-lzy_")&&Number(c.getAttribute("data-atf"))&1&&!m(c))return!0}return!1}for(var p=document.getElementsByTagName("img"),q=0,r=p.length;q<r;++q){var t=p[q];Number(t.getAttribute("data-atf"))&1&&m(t)&&(t.src=t.getAttribute("data-src"))};var w,x,y,z,A,B,C,D,E,F;function H(){google.xjsu=u;e._F_jsUrl=u;A=function(){h()};w=!1;x=(st===1||st===3)&&!!google.caft&&!n();y=f();z=(st===2||st===3)&&!!y&&!n();B=pod;C=pop;D=povp;E=pop&&document.prerendering||povp&&document.hidden;F=D?"visibilitychange":"prerenderingchange"}function I(){w||x||z||E||(A(),w=!0)}
+2025-07-31 04:29:06,500 - setTimeout(function(){google&&google.tick&&google.timers&&google.timers.load&&google.tick("load","xjspls");H();if(x||z||E){if(x){var b=function(){x=!1;I()};google.caft(b);window.setTimeout(b,amd)}z&&(b=function(){z=!1;I()},y.cbvi.push(b),window.setTimeout(b,mmd));if(E){var a=function(){(D?document.hidden:document.prerendering)||(E=!1,I(),document.removeEventListener(F,a))};document.addEventListener(F,a,{passive:!0})}if(B||C||D)w||g()}else A()},0);})();window._ = window._ || {};window._DumpException = _._DumpException = function(e){throw e;};window._s = window._s || {};_s._DumpException = _._DumpException;window._qs = window._qs || {};_qs._DumpException = _._DumpException;(function(){var t=[132,0,1024,0,0,0,0,16384,65536,393216,689186,637534208,4194336,67108864,0,671088656,805306370,4194317,4231432,65314816,436207710,6723600,173546592,536903872,239076362,134460672,16777216,268706064,786432,160,4608,52,319529,50331648,540602496,0,201850880,262166,0,4687872];window._F_toggles = window._xjs_toggles = t;})();window._F_installCss = window._F_installCss || function(css){};(function(){google.jl={bfl:0,dw:false,eli:false,ine:false,ubm:false,uwp:true,vs:false};})();(function(){var pmc='{\x22d\x22:{},\x22sb_he\x22:{\x22client\x22:\x22heirloom-hp\x22,\x22dh\x22:true,\x22ds\x22:\x22\x22,\x22host\x22:\x22google.com\x22,\x22jsonp\x22:true,\x22msgs\x22:{\x22cibl\x22:\x22Clear Search\x22,\x22dym\x22:\x22Did you mean:\x22,\x22lcky\x22:\x22I\\u0026#39;m Feeling Lucky\x22,\x22lml\x22:\x22Learn more\x22,\x22psrc\x22:\x22This search was removed from your \\u003Ca href\x3d\\\x22/history\\\x22\\u003EWeb History\\u003C/a\\u003E\x22,\x22psrl\x22:\x22Remove\x22,\x22sbit\x22:\x22Search by image\x22,\x22srch\x22:\x22Google Search\x22},\x22ovr\x22:{},\x22pq\x22:\x22\x22,\x22rfs\x22:[],\x22stok\x22:\x22Wxr6BtUcA4CrnvRrhUF20Hz07oE\x22}}';google.pmc=JSON.parse(pmc);})();</script></body></html>
+2025-07-31 04:29:06,503 - 0
+2025-07-31 04:29:06,505 - 
+2025-07-31 04:29:06,507 - 
+2025-07-31 04:29:06,509 - Sent 21085 bytes back to client. Latency => 0.206043
+2025-07-31 04:29:06,510 - === Cache State ===
+2025-07-31 04:29:06,513 - Size  : 3 / 20
+2025-07-31 04:29:06,514 - Hits  : 0
+2025-07-31 04:29:06,515 - Misses: 3
+2025-07-31 04:29:06,517 - Entry 1: httpbin.org/get  size=478  freq=1  score=0.002
+2025-07-31 04:29:06,518 - Entry 2: google.com/  size=792  freq=1  score=0.000
+2025-07-31 04:29:06,519 - Entry 3: www.google.com/  size=21085  freq=1  score=0.000
+2025-07-31 04:29:06,521 - ===================
+2025-07-31 04:29:06,526 - 
