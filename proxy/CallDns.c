@@ -8,7 +8,7 @@
         to contact root dns and so on 
         
 */
-
+#define _POSIX_C_SOURCE 200112L
 #include "Headers.h"
 
 #include <stdio.h>      // printf() 

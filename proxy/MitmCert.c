@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+
 int generate_domain_cert(const char *domain) {
     char cmd[1024];
     char keyfile[256], csrfile[256], certfile[256], configfile[256];

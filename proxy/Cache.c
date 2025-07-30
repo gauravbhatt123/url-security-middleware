@@ -2,111 +2,149 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <stddef.h>
 
-static void removeEntry(optimisedcache *cache, CacheEntry *e) {
-    if (e->prev) e->prev->next = e->next;
-    else         cache->head = e->next;
+// GDSF (Greedy Dual Size Frequency) Cache Implementation
+// This cache ranks entries by frequency, latency, and size for eviction
 
-    if (e->next) e->next->prev = e->prev;
-    else         cache->tail = e->prev;
+static void removeEntry(optimisedcache *c, CacheEntry *e) {
+    if (e->prev) {
+        e->prev->next = e->next;
+    } else {
+        c->head = e->next;
+    }
+    if (e->next) {
+        e->next->prev = e->prev;
+    } else {
+        c->tail = e->prev;
+    }
 }
 
-static void insertByScore(optimisedcache *cache, CacheEntry *e) {
-    // empty?
-    if (!cache->head) {
-        cache->head = cache->tail = e;
+static void insertByScore(optimisedcache *c, CacheEntry *e) {
+    if (!c->head) {
+        c->head = c->tail = e;
         e->prev = e->next = NULL;
         return;
     }
-
-    // highest‐score at head
-    if (e->score >= cache->head->score) {
-        e->next = cache->head;
+    
+    // Insert at head if score is highest
+    if (e->score >= c->head->score) {
+        e->next = c->head;
         e->prev = NULL;
-        cache->head->prev = e;
-        cache->head = e;
+        c->head->prev = e;
+        c->head = e;
         return;
     }
-    // lowest‐score at tail
-    if (e->score <= cache->tail->score) {
-        e->prev = cache->tail;
+    
+    // Insert at tail if score is lowest
+    if (e->score <= c->tail->score) {
+        e->prev = c->tail;
         e->next = NULL;
-        cache->tail->next = e;
-        cache->tail = e;
+        c->tail->next = e;
+        c->tail = e;
         return;
     }
-    // middle: find first node with score < e->score and insert before it
-    CacheEntry *cur = cache->head->next;
+    
+    // Insert in middle based on score
+    CacheEntry *cur = c->head->next;
     while (cur && cur->score >= e->score) {
         cur = cur->next;
     }
-    // cur now has cur->score < e->score
-    e->next        = cur;
-    e->prev        = cur->prev;
+    e->next = cur;
+    e->prev = cur->prev;
     cur->prev->next = e;
-    cur->prev      = e;
+    cur->prev = e;
 }
 
-
 optimisedcache *createcache(long long capacity) {
-    optimisedcache *c = malloc(sizeof *c);
-    c->head = c->tail = NULL;
+    optimisedcache *c = calloc(1, sizeof *c);
+    if (!c) {
+        perror("createcache: malloc failed");
+        return NULL;
+    }
     c->capacity = capacity;
-    c->size = c->hit_counter = c->miss_counter = 0;
+    c->size = 0;
+    c->hit_counter = 0;
+    c->miss_counter = 0;
+    c->head = c->tail = NULL;
     return c;
 }
 
-CacheEntry *lookupcache(optimisedcache *cache, const char *url, const char *path) {
-    for (CacheEntry *e = cache->head; e; e = e->next) {
-        if (strcmp(e->url, url)==0 && strcmp(e->path, path)==0) {
-            cache->hit_counter++;
-            // update frequency & score
-            e->frequency++;
-            e->score = (e->frequency * e->latency) / (long double)e->response_size;
-            // reposition
-            removeEntry(cache, e);
-            insertByScore(cache, e);
+CacheEntry *lookupcache(optimisedcache *c, const char *url, const char *path) {
+    for (CacheEntry *e = c->head; e; e = e->next) {
+        if (strcmp(e->url, url) == 0 && strcmp(e->path, path) == 0) {
+            // Cache hit - update frequency and score
+            ++c->hit_counter;
+            ++e->frequency;
+            e->score = (e->frequency * e->latency) / e->response_size;
+            
+            // Remove and reinsert to maintain score order
+            removeEntry(c, e);
+            insertByScore(c, e);
             return e;
         }
     }
-    cache->miss_counter++;
+    ++c->miss_counter;
     return NULL;
 }
 
-void insertcache(optimisedcache *cache,
-                 const char *url, const char *path,
-                 char *response, long double response_size,
+void insertcache(optimisedcache *c, const char *url, const char *path,
+                 const char *response, long double response_size,
                  long double latency) {
-    CacheEntry *e = malloc(sizeof *e);
-    strncpy(e->url, url, sizeof e->url);
-    strncpy(e->path, path, sizeof e->path);
-    e->response      = response;
-    e->response_size = response_size;
-    e->frequency     = 1;
-    e->latency       = latency;
-    e->score         = (latency * e->frequency) / (long double)response_size;
-    // splice in
-    insertByScore(cache, e);
-    cache->size++;
+    if (!c || !url || !path || !response || response_size <= 0) {
+        return;
+    }
+    
+    // Create a copy of the response
+    char *dup = malloc((size_t)response_size + 1);
+    if (!dup) {
+        perror("insertcache: malloc failed");
+        return;
+    }
+    memcpy(dup, response, (size_t)response_size);
+    dup[(size_t)response_size] = '\0';
 
-    // evict lowest‐priority if over capacity
-    if (cache->size > cache->capacity) {
-        CacheEntry *victim = cache->tail;
-        removeEntry(cache, victim);
+    // Create new cache entry
+    CacheEntry *e = malloc(sizeof *e);
+    if (!e) {
+        perror("insertcache: malloc failed");
+        free(dup);
+        return;
+    }
+    
+    strncpy(e->url, url, sizeof e->url - 1);
+    e->url[sizeof e->url - 1] = '\0';
+    strncpy(e->path, path, sizeof e->path - 1);
+    e->path[sizeof e->path - 1] = '\0';
+    e->response = dup;
+    e->response_size = response_size;
+    e->frequency = 1;
+    e->latency = latency;
+    e->score = (latency * 1.0L) / response_size;
+    e->next = e->prev = NULL;
+
+    // Insert into cache
+    insertByScore(c, e);
+    ++c->size;
+
+    // Evict if cache is full (GDSF eviction)
+    if (c->size > c->capacity) {
+        CacheEntry *victim = c->tail;
+        removeEntry(c, victim);
         free(victim->response);
         free(victim);
-        cache->size--;
+        --c->size;
     }
 }
 
-void freecache(optimisedcache *cache) {
-    CacheEntry *e = cache->head;
+void freecache(optimisedcache *c) {
+    if (!c) return;
+    
+    CacheEntry *e = c->head;
     while (e) {
         CacheEntry *next = e->next;
         free(e->response);
         free(e);
         e = next;
     }
-    free(cache);
+    free(c);
 }

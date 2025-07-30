@@ -1,170 +1,116 @@
+#define _POSIX_C_SOURCE 200112L
 #include "Headers.h"
 #include <sys/time.h>
-#include <stdio.h>      // printf(), fprintf(), perror()
-#include <stdlib.h>     // malloc(), realloc(), free()
-#include <string.h>     // memset(), strlen()
-#include <errno.h>      // errno, EAGAIN, EWOULDBLOCK
-#include <arpa/inet.h>  // ntop() etc
-#include <sys/socket.h> // socket(), setsockopt(), SOL_SOCKET, SO_RCVTIMEO, SO_SNDTIMEO
-#include <netdb.h>      // getaddrinfo(), freeaddrinfo()
-#include <unistd.h>     // close()
-#include <openssl/ssl.h>
-#include <openssl/err.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <unistd.h>
 
-#define SOCK_TIMEOUT_SECS 5      // seconds for send/recv timeout
-#define MAX_RETRIES       3      // number of full GET retries
+// getIP function is defined in CallDns.c
 
-void FetchResServer(const char *host,
-                    const char *path,
-                    char **res,
-                    long double *ressize,
-                    long double *latency)
-{
-    *res = NULL;
-    *ressize = 0;
+void FetchResServer(const char *host, const char *path,
+                    char **res, long double *ressize,
+                    long double *latency) {
+    *res = NULL; 
+    *ressize = 0; 
     *latency = 0;
 
-    struct addrinfo *iplist = getIP(host);
-    if (!iplist) {
+    struct addrinfo *ai = getIP(host);
+    if (!ai) {
         fprintf(stderr, "DNS lookup failed for %s\n", host);
         return;
     }
 
-    struct timeval tval_start, tval_end;
-    int attempt;
-    for (attempt = 1; attempt <= MAX_RETRIES; ++attempt) {
-        gettimeofday(&tval_start, NULL);
-
-        int serverSocketfd = -1;
-        int bufSize = 1024;
-        int total_bytes_received = 0;
-        int curr_bytes_received = 0;
-        char *buffer = NULL;
-
-        // Try each resolved address
-        for (struct addrinfo *itr = iplist; itr; itr = itr->ai_next) {
-            // 1) create socket
-            serverSocketfd = socket(itr->ai_family,
-                                    itr->ai_socktype,
-                                    itr->ai_protocol);
-            if (serverSocketfd < 0) {
-                perror("socket");
-                continue;
-            }
-
-            // 2) set send/recv timeouts
-            struct timeval sock_timeout = { SOCK_TIMEOUT_SECS, 0 };
-            setsockopt(serverSocketfd, SOL_SOCKET, SO_RCVTIMEO,
-                       &sock_timeout, sizeof(sock_timeout));
-            setsockopt(serverSocketfd, SOL_SOCKET, SO_SNDTIMEO,
-                       &sock_timeout, sizeof(sock_timeout));
-
-            // 3) connect to the server
-            if (connect(serverSocketfd,
-                        itr->ai_addr,
-                        itr->ai_addrlen) < 0) {
-                perror("connect");
-                close(serverSocketfd);
-                continue;
-            }
-
-            // 4) build & send HTTP GET
-            char request[1024];
-            snprintf(request, sizeof(request),
-                     "GET %s HTTP/1.1\r\n"
-                     "Host: %s\r\n"
-                     "User-Agent: curl/8.15.0\r\n"
-                     "Accept: */*\r\n"
-                     "Connection: close\r\n\r\n",
-                     path, host);
-
-            if (send(serverSocketfd,
-                     request,
-                     strlen(request), 0) < 0) {
-                perror("send");
-                close(serverSocketfd);
+    struct timeval start, end;
+    for (int try = 0; try < 3; ++try) {
+        gettimeofday(&start, NULL);
+        int sock = -1;
+        
+        // Try to connect to each address
+        for (struct addrinfo *p = ai; p; p = p->ai_next) {
+            sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+            if (sock < 0) continue;
+            
+            // Set socket timeouts
+            struct timeval tv = {5, 0};
+            setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof tv);
+            setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof tv);
+            
+            if (connect(sock, p->ai_addr, p->ai_addrlen) == 0) {
                 break;
             }
+            close(sock); 
+            sock = -1;
+        }
+        
+        if (sock < 0) {
+            fprintf(stderr, "Failed to connect to %s (attempt %d)\n", host, try + 1);
+            continue;
+        }
 
-            // 5) receive loop
-            buffer = malloc(bufSize);
-            if (!buffer) {
-                perror("malloc");
-                close(serverSocketfd);
+        // Construct HTTP request
+        char req[1024];
+        int len = snprintf(req, sizeof req,
+                           "GET %s HTTP/1.1\r\n"
+                           "Host: %s\r\n"
+                           "User-Agent: proxy/1.0\r\n"
+                           "Accept: */*\r\n"
+                           "Connection: close\r\n\r\n",
+                           path, host);
+        
+        if (send(sock, req, len, 0) < 0) {
+            fprintf(stderr, "Failed to send request to %s\n", host);
+            close(sock);
+            continue;
+        }
+
+        // Receive response
+        size_t cap = 4096, total = 0;
+        char *buf = malloc(cap);
+        if (!buf) {
+            perror("FetchResServer: malloc failed");
+            close(sock);
+            continue;
+        }
+        
+        ssize_t n;
+        while ((n = recv(sock, buf + total, cap - total, 0)) > 0) {
+            total += n;
+            if (total == cap) {
+                cap *= 2;
+                char *newbuf = realloc(buf, cap);
+                if (!newbuf) {
+                    perror("FetchResServer: realloc failed");
+                    free(buf);
+                    close(sock);
+                    goto next_try;
+                }
+                buf = newbuf;
+            }
+        }
+        close(sock);
+        
+        if (total > 0) {
+            gettimeofday(&end, NULL);
+            *latency = (end.tv_sec - start.tv_sec) +
+                       (end.tv_usec - start.tv_usec) / 1e6;
+            *res = realloc(buf, total + 1);
+            if (!*res) {
+                perror("FetchResServer: final realloc failed");
+                free(buf);
                 break;
             }
-
-            total_bytes_received = 0;
-            while ((curr_bytes_received = recv(
-                        serverSocketfd,
-                        buffer + total_bytes_received,
-                        bufSize - total_bytes_received,
-                        0)) > 0) {
-                total_bytes_received += curr_bytes_received;
-                if (total_bytes_received == bufSize) {
-                    bufSize *= 2;
-                    char *tmp = realloc(buffer, bufSize);
-                    if (!tmp) {
-                        perror("realloc");
-                        free(buffer);
-                        buffer = NULL;
-                        curr_bytes_received = -1;
-                        break;
-                    }
-                    buffer = tmp;
-                }
-            }
-
-            // close socket whether we succeeded or hit timeout/error
-            close(serverSocketfd);
-
-             if (curr_bytes_received < 0) {
-
-                if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                    // Case 1: Timed out
-                    fprintf(stderr,
-                        "Attempt %d: recv() timed out after %d seconds\n",
-                        attempt, SOCK_TIMEOUT_SECS);
-                } 
-                else if (total_bytes_received == 0) {
-                    // Case 2: Error and nothing was read at all
-                    fprintf(stderr,
-                        "Attempted recv() failed, no data received from the server\n");
-                } 
-                else {
-                    // Case 3: Error after some data was received
-                    fprintf(stderr,
-                        "Attempt recv() failed, partial read failure\n");
-                }
-
-                free(buffer);
-                buffer = NULL;
-                continue;  // try next address or retry
-            }
-
-            // break out of address loop on any non-timeout result
+            (*res)[total] = '\0';
+            *ressize = total;
             break;
         }
-
-        if (buffer && total_bytes_received > 0) {
-            // success
-            gettimeofday(&tval_end, NULL);
-            *latency = (tval_end.tv_sec  - tval_start.tv_sec)
-                     + (tval_end.tv_usec - tval_start.tv_usec) / 1e6;
-            *ressize = total_bytes_received;
-            *res = buffer;
-            break;
-        }
-
-        // if we get here, either buffer==NULL or recv error: retry
-        fprintf(stderr, "Attempt %d failed, retrying...\n", attempt);
+        free(buf);
+        
+next_try:
+        continue;
     }
-
-    if (attempt > MAX_RETRIES) {
-        fprintf(stderr,
-                "All %d attempts failed; giving up.\n",
-                MAX_RETRIES);
-    }
-
-    freeaddrinfo(iplist);
+    freeaddrinfo(ai);
 }

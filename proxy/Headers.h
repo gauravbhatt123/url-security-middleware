@@ -1,60 +1,56 @@
+#ifndef HEADERS_H
+#define HEADERS_H
 
-/*
-LRU Cache structure
-*/      
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <pthread.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
-// This Structure Represents one cached entry in the LRU cache
-typedef struct CacheEntry{
-        char url[256];          // url string
-        char path[256];         // path for url
-        char *response;         // cached response address
-        long double response_size;
+/* ---------- CACHE ---------- */
+typedef struct CacheEntry {
+    char        url[256];
+    char        path[256];
+    char       *response;
+    long double response_size;
+    long long   frequency;
+    long double latency;
+    long double score;
+    struct CacheEntry *next;
+    struct CacheEntry *prev;
+} CacheEntry;
 
-        long long int frequency;
-        long double latency;
-        long double score;
+typedef struct {
+    CacheEntry *head;
+    CacheEntry *tail;
+    long long   capacity;
+    long long   size;
+    long long   hit_counter;
+    long long   miss_counter;
+} optimisedcache;
 
+optimisedcache *createcache(long long capacity);
+CacheEntry     *lookupcache(optimisedcache *, const char *url, const char *path);
+void            insertcache(optimisedcache *, const char *url, const char *path,
+                            const char *response, long double response_size,
+                            long double latency);
+void            freecache(optimisedcache *);
 
-        struct CacheEntry * next;
-        struct CacheEntry * prev;       // to make doubly linked list
-}CacheEntry;
-
-
-// This Represents the LRU Cache itself
-typedef struct optimisedcache{
-        CacheEntry * head;      // start and end of lru
-        CacheEntry * tail;
-        long long int capacity;           // capacity
-        long long int size;               // current size
-        long long int hit_counter;        
-        long long int miss_counter;       // further use
-        
-}optimisedcache;
-
-
-
-// LRU Cache Functions
-
-//Function for Creating and initializing an LRU cache with the given capacity..
-optimisedcache *createcache(long long int capacity);
-
-// Function for Searching the cache for a given URL, and it returns pointer to the entry if found, else NULL
-CacheEntry *lookupcache(optimisedcache *cache, const char *url,const char * path);
-
-//Function for Inserting a new cache entry with URL and response data into the cache
-void insertcache(optimisedcache *cache, const char *url,const char * path,char *response, long double response_size, long double latency_ms);
-
-//Function for Removing a cache entry identified by URL from the cache
-void freecache(optimisedcache *cache);
-
-
-
-
-
-// other utilities
-void FetchResServer(const char * host,const char * path,char ** res,long double * ressize, long double *latency);
-
-void FetchResCache(char * req,long double reqsize,char ** res,long double * ressize,optimisedcache * cache, long double *latency);
-
-struct addrinfo * getIP(const char * hostname );
+/* ---------- PROXY CORE ---------- */
+void  FetchResServer(const char *host, const char *path,
+                     char **res, long double *ressize, long double *latency);
+void  FetchResCache(char *req, long double reqsize,
+                    char **res, long double *ressize,
+                    optimisedcache *cache, long double *latency);
+struct addrinfo *getIP(const char *hostname);
 void print_cache_state(optimisedcache *cache);
+
+/* ---------- MITM ---------- */
+int generate_domain_cert(const char *domain);
+
+#endif
