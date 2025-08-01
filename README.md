@@ -27,6 +27,8 @@ A robust, high-performance C-based proxy server with HTTP/HTTPS support, transpa
 - **MitmCert.c:** Dynamic certificate generation for HTTPS interception
 - **CacheData.c:** Cache state monitoring and debugging
 
+![Architecture](Arch.png)
+
 ### Cache Algorithm (GDSF):
 - **Score Calculation:** `(frequency × latency) / response_size`
 - **Eviction Policy:** Removes lowest-scored entries when cache is full
@@ -68,6 +70,8 @@ gcc EntryClient.c FetchServer.c Cache.c CallDns.c ClientToServer.c CacheData.c M
 The server will start listening on port 3040 with comprehensive debug output.
 
 ---
+
+![SampleOutput](output.png)
 
 ## 🌐 Usage Examples
 
