@@ -1,10 +1,10 @@
-#  High-Performance Multithreaded Proxy Server
+# 🔒 High-Performance Multithreaded Proxy Server
 
 A comprehensive proxy server system featuring a **C-based multithreaded proxy** with HTTP/HTTPS support and **Python GUI** for monitoring. Includes transparent TLS interception and intelligent GDSF caching for optimal performance.
 
 ---
 
-## Features
+## 🚀 Features
 
 - **Multithreaded C Proxy:** Handles concurrent HTTP/HTTPS clients using POSIX threads
 - **HTTPS MITM Support:** Dynamic certificate generation and transparent TLS interception
@@ -17,7 +17,7 @@ A comprehensive proxy server system featuring a **C-based multithreaded proxy** 
 
 ---
 
-##  Architecture
+## 🏗️ Architecture
 
 ### Core Components:
 
@@ -93,7 +93,7 @@ python gui.py
 
 ![SampleOutput](output.png)
 
-##  Usage Examples
+## 🌐 Usage Examples
 
 ### HTTP Requests
 ```bash
@@ -220,7 +220,7 @@ done
 
 ---
 
-##  Debugging
+## 🐛 Debugging
 
 ### Debug Output
 The proxy provides comprehensive debug information:
