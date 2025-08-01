@@ -1,24 +1,27 @@
-# 🔒 High-Performance Multithreaded Proxy Server
+#  High-Performance Multithreaded Proxy Server
 
-A robust, high-performance C-based proxy server with HTTP/HTTPS support, transparent TLS interception, and an intelligent GDSF (Greedy Dual Size Frequency) cache system. Features dynamic certificate generation for HTTPS MITM, comprehensive caching, and real-time cache state monitoring.
+A comprehensive proxy server system featuring a **C-based multithreaded proxy** with HTTP/HTTPS support and **Python GUI** for monitoring. Includes transparent TLS interception and intelligent GDSF caching for optimal performance.
 
 ---
 
-## 🚀 Features
+## Features
 
-- **Multithreaded Architecture:** Handles concurrent HTTP/HTTPS clients using POSIX threads
+- **Multithreaded C Proxy:** Handles concurrent HTTP/HTTPS clients using POSIX threads
 - **HTTPS MITM Support:** Dynamic certificate generation and transparent TLS interception
 - **Intelligent Caching:** GDSF (Greedy Dual Size Frequency) cache with frequency, latency, and size-based eviction
 - **Real-time Monitoring:** Cache state printing for every request (hit/miss)
+- **Python GUI:** CustomTkinter interface for proxy control and monitoring
 - **Robust Error Handling:** Comprehensive error handling with timeouts and retries
 - **Memory Management:** Proper memory allocation/deallocation with bounds checking
 - **Thread Safety:** Mutex-protected cache operations for concurrent access
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ### Core Components:
+
+**C Proxy Server:**
 - **EntryClient.c:** Main proxy server with client handling and HTTPS MITM
 - **FetchServer.c:** HTTP server communication and response handling
 - **Cache.c:** GDSF cache implementation with intelligent eviction
@@ -26,6 +29,9 @@ A robust, high-performance C-based proxy server with HTTP/HTTPS support, transpa
 - **CallDns.c:** DNS resolution utilities
 - **MitmCert.c:** Dynamic certificate generation for HTTPS interception
 - **CacheData.c:** Cache state monitoring and debugging
+
+**Python Components:**
+- **gui/gui.py:** CustomTkinter GUI for proxy control and monitoring
 
 ![Architecture](Arch.png)
 
@@ -39,6 +45,7 @@ A robust, high-performance C-based proxy server with HTTP/HTTPS support, transpa
 ## 🛠️ Technologies Used
 
 - **C (POSIX threads, OpenSSL, sockets)**
+- **Python (CustomTkinter)**
 - **OpenSSL:** Dynamic certificate generation and TLS interception
 - **Linux/Unix systems (GCC compiler)**
 
@@ -50,30 +57,43 @@ A robust, high-performance C-based proxy server with HTTP/HTTPS support, transpa
 ```bash
 # Install required packages (Ubuntu/Debian)
 sudo apt-get update
-sudo apt-get install build-essential libssl-dev
+sudo apt-get install build-essential libssl-dev python3 python3-pip
 
 # For Arch Linux
-sudo pacman -S base-devel openssl
+sudo pacman -S base-devel openssl python python-pip
 ```
 
 ### 2. Build the Proxy Server
 ```bash
 cd proxy
-gcc EntryClient.c FetchServer.c Cache.c CallDns.c ClientToServer.c CacheData.c MitmCert.c -o proxy_server -lssl -lcrypto -lpthread
+gcc -o proxy_server *.c -lpthread -lssl -lcrypto
 ```
 
-### 3. Run the Proxy Server
+### 3. Install CA Certificate (Required for HTTPS)
 ```bash
-./proxy_server
+# Export CA certificate
+cd proxy
+openssl x509 -in mitmproxyCA.crt -out mitmproxyCA.pem
+
+# Install in browser/system (see detailed instructions below)
 ```
 
-The server will start listening on port 3040 with comprehensive debug output.
+### 4. Run the System
+```bash
+# Terminal 1: Start C proxy server
+cd proxy
+./proxy_server
+
+# Terminal 2: Start GUI (optional)
+cd gui
+python gui.py
+```
 
 ---
 
 ![SampleOutput](output.png)
 
-## 🌐 Usage Examples
+##  Usage Examples
 
 ### HTTP Requests
 ```bash
@@ -84,20 +104,11 @@ curl -x http://localhost:3040 http://example.com
 
 ### HTTPS Requests (with MITM)
 ```bash
-# First request (cache miss)
-curl -x http://localhost:3040 --cacert mitmproxyCA.crt --http1.1 https://httpbin.org/get
-
-# Second request (cache hit)
-curl -x http://localhost:3040 --cacert mitmproxyCA.crt --http1.1 https://httpbin.org/get
-
-# Test different URLs
-curl -x http://localhost:3040 --cacert mitmproxyCA.crt --http1.1 https://api.github.com/users/octocat
+# IMPORTANT: Install mitmproxyCA.crt in your browser/system first
+# Then test HTTPS requests
+curl -x http://localhost:3040 https://httpbin.org/get
+curl -x http://localhost:3040 https://api.github.com/users/octocat
 ```
-
-### Browser Configuration
-1. Set proxy to `localhost:3040`
-2. Install the `mitmproxyCA.crt` certificate in your browser
-3. Browse normally - all HTTPS traffic will be intercepted and cached
 
 ---
 
@@ -107,40 +118,47 @@ The proxy prints cache state after every request:
 
 ```
 === Cache State ===
-Size  : 2 / 20
-Hits  : 3
-Misses: 2
-Entry 1: httpbin.org/get  size=478  freq=2  score=0.004
-Entry 2: api.github.com/users/octocat  size=1024  freq=1  score=0.001
+Total entries: 2/20
+Entry 0: URL: google.com Path: / Size: 1024 Freq: 2 Score: 0.001953
+Entry 1: URL: facebook.com Path: / Size: 2048 Freq: 1 Score: 0.000488
 ===================
 ```
 
 **Cache Metrics:**
-- **Size:** Current entries / Maximum capacity
-- **Hits:** Successful cache lookups
-- **Misses:** Failed cache lookups
-- **Entry Details:** URL, path, response size, frequency, score
+- **Total entries:** Current entries / Maximum capacity
+- **Entry Details:** URL, path, response size, frequency, GDSF score
+
+---
+
+## 🖥️ GUI Features
+
+The Python GUI provides:
+- **Proxy Control:** Start/stop proxy server
+- **Real-time Logs:** Live monitoring of proxy activity
+- **Cache Visualization:** Current cache state display
+- **Request Testing:** Built-in URL testing interface
+- **Modern Interface:** CustomTkinter with clean design
+
+### GUI Usage
+```bash
+cd gui
+python gui.py
+```
 
 ---
 
 ## 🔧 Configuration
 
 ### Port Configuration
-Edit `EntryClient.c` line 32:
+Edit `proxy/EntryClient.c` line 32:
 ```c
 #define PORT "3040"     // Change to your preferred port
 ```
 
 ### Cache Capacity
-Edit `EntryClient.c` line 147:
+Edit `proxy/EntryClient.c` line 147:
 ```c
 cache = createcache(20);  // Change cache size (default: 20 entries)
-```
-
-### Timeout Settings
-Edit `EntryClient.c` line 35:
-```c
-#define TIMEOUT_SEC 5     // Socket timeout in seconds
 ```
 
 ---
@@ -150,31 +168,22 @@ Edit `EntryClient.c` line 35:
 ### Basic Functionality Test
 ```bash
 # Start proxy
-./proxy_server
+cd proxy && ./proxy_server
 
 # In another terminal, test HTTP
 curl -x http://localhost:3040 http://httpbin.org/get
 
-# Test HTTPS
-curl -x http://localhost:3040 --cacert mitmproxyCA.crt --http1.1 https://httpbin.org/get
+# Test HTTPS (after installing CA certificate)
+curl -x http://localhost:3040 https://httpbin.org/get
 ```
 
 ### Cache Performance Test
 ```bash
 # Make multiple requests to same URL
 for i in {1..5}; do
-    curl -x http://localhost:3040 --cacert mitmproxyCA.crt --http1.1 https://httpbin.org/get
+    curl -x http://localhost:3040 https://httpbin.org/get
     sleep 1
 done
-```
-
-### Concurrent Load Test
-```bash
-# Test with multiple concurrent requests
-for i in {1..10}; do
-    curl -x http://localhost:3040 --cacert mitmproxyCA.crt --http1.1 https://httpbin.org/get &
-done
-wait
 ```
 
 ---
@@ -185,6 +194,7 @@ wait
 - **Dynamic Certificate Generation:** Creates certificates on-demand for each domain
 - **Transparent Interception:** No client configuration needed beyond CA certificate
 - **Secure Storage:** Certificates stored with proper permissions (600 for keys, 644 for certs)
+- **Certificate Trust:** Requires manual installation of CA certificate
 
 ### Error Handling
 - **DNS Resolution:** Multiple retry attempts with different addresses
@@ -210,7 +220,7 @@ wait
 
 ---
 
-## 🐛 Debugging
+##  Debugging
 
 ### Debug Output
 The proxy provides comprehensive debug information:
@@ -219,48 +229,10 @@ The proxy provides comprehensive debug information:
 [DEBUG] HTTPS Cache MISS, fetching from server
 [DEBUG] HTTPS response cached successfully
 === Cache State ===
-Size  : 1 / 20
-Hits  : 0
-Misses: 1
-Entry 1: httpbin.org/get  size=478  freq=1  score=0.002
+Total entries: 1/20
+Entry 0: URL: httpbin.org Path: /get Size: 478 Freq: 1 Score: 0.002
 ===================
 ```
-
-### Common Issues
-1. **Port Already in Use:** Change port in `EntryClient.c`
-2. **Certificate Errors:** Ensure `mitmproxyCA.crt` is properly installed
-3. **Compilation Errors:** Install required development packages
-
----
-
-## 📁 File Structure
-
-```
-proxy/
-├── EntryClient.c      # Main proxy server with HTTPS MITM
-├── FetchServer.c      # HTTP server communication
-├── Cache.c           # GDSF cache implementation
-├── ClientToServer.c   # HTTP request handling
-├── CallDns.c         # DNS resolution utilities
-├── MitmCert.c        # Dynamic certificate generation
-├── CacheData.c       # Cache monitoring and debugging
-├── Headers.h         # Common headers and declarations
-├── MitmCert.h        # Certificate generation headers
-├── mitmproxyCA.crt   # CA certificate for HTTPS MITM
-├── mitmproxyCA.key   # CA private key
-└── proxy_server      # Compiled executable
-```
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
 ---
 
 ## 📄 License
@@ -268,13 +240,3 @@ proxy/
 This project is for educational and research purposes. Use responsibly and in accordance with applicable laws and regulations.
 
 ---
-
-## 🙏 Acknowledgments
-
-- **OpenSSL:** For TLS/SSL functionality
-- **POSIX Threads:** For concurrent processing
-- **GDSF Algorithm:** For intelligent cache eviction
-- **Linux/Unix Community:** For robust system programming tools
-
-
-
