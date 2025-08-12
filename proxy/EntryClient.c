@@ -5,6 +5,7 @@
 
 #include "Headers.h"    // Declarations for FetchRes(), getIP(), etc.
 #include "MitmCert.h"
+#include "UrlSecurity.h" // <--- Add this line
 
 #include <stdio.h>      // printf(), perror()
 #include <stdlib.h>     // malloc(), free(), exit()
@@ -230,6 +231,22 @@ static void *handle_client(void *arg) {
             char host[256]; int port = 443;
             sscanf(url, "%255[^:]:%d", host, &port);
 
+            // --- URL Security Check for HTTPS ---
+            char https_url_full[1024];
+            snprintf(https_url_full, sizeof(https_url_full), "https://%s/", host);
+            url_security_result_t sec_result = {0};
+            if (check_url_security(https_url_full, &sec_result) == 0 && !sec_result.is_safe) {
+                printf("[SECURITY] Blocked HTTPS URL: %s | Reason: %s\n", https_url_full, sec_result.explanation);
+                const char *block_html = get_block_page_html(sec_result.explanation);
+                char block_response[4096];
+                int html_len = strlen(block_html);
+                snprintf(block_response, sizeof(block_response),
+                    "HTTP/1.1 403 Forbidden\r\nContent-Type: text/html\r\nContent-Length: %d\r\n\r\n%s",
+                    html_len, block_html);
+                send(client_fd, block_response, strlen(block_response), 0);
+                free(buffer); close(client_fd); return NULL;
+            }
+
             if (generate_domain_cert(host) != 0) {
                 const char *err = "HTTP/1.1 502 Bad Gateway\r\n\r\n";
                 send(client_fd, err, strlen(err), 0);
@@ -369,6 +386,35 @@ static void *handle_client(void *arg) {
                          
                          printf("[DEBUG] HTTPS Cache MISS, fetching from server\n");
                         
+                        // --- SECURITY CHECK: Check the full URL for malicious content ---
+                        char full_https_url[1024];
+                        snprintf(full_https_url, sizeof(full_https_url), "https://%s%s", req_host, path);
+                        url_security_result_t https_sec_result = {0};
+                        
+                        if (check_url_security(full_https_url, &https_sec_result) == 0 && !https_sec_result.is_safe) {
+                            printf("[SECURITY] Blocked HTTPS request: %s | Reason: %s\n", full_https_url, https_sec_result.explanation);
+                            const char *block_html = get_block_page_html(https_sec_result.explanation);
+                            
+                            // Create block response
+                            char block_response[8192];
+                            int html_len = strlen(block_html);
+                            snprintf(block_response, sizeof(block_response),
+                                "HTTP/1.1 403 Forbidden\r\nContent-Type: text/html\r\nContent-Length: %d\r\n\r\n%s",
+                                html_len, block_html);
+                            
+                            // Send block response via SSL
+                            if (SSL_write(ssl_client, block_response, strlen(block_response)) > 0) {
+                                printf("[DEBUG] Sent HTTPS security block response to client\n");
+                            }
+                            
+                            SSL_shutdown(ssl_client);
+                            SSL_free(ssl_client);
+                            SSL_CTX_free(mitm_ctx);
+                            free(buffer);
+                            close(client_fd);
+                            return NULL;
+                        }
+                        
                         // Use the existing HTTP flow to fetch the response
                         char *response = NULL;
                         long double response_size = 0;
@@ -444,6 +490,19 @@ static void *handle_client(void *arg) {
             }
         } else {
             printf("[DEBUG] Handling plain HTTP...\n");
+            // --- URL Security Check for HTTP ---
+            url_security_result_t sec_result = {0};
+            if (check_url_security(url, &sec_result) == 0 && !sec_result.is_safe) {
+                printf("[SECURITY] Blocked HTTP URL: %s | Reason: %s\n", url, sec_result.explanation);
+                const char *block_html = get_block_page_html(sec_result.explanation);
+                char block_response[4096];
+                int html_len = strlen(block_html);
+                snprintf(block_response, sizeof(block_response),
+                    "HTTP/1.1 403 Forbidden\r\nContent-Type: text/html\r\nContent-Length: %d\r\n\r\n%s",
+                    html_len, block_html);
+                send(client_fd, block_response, strlen(block_response), 0);
+                free(buffer); close(client_fd); return NULL;
+            }
             char *response = NULL;
             long double res_len = -1, latency = 0.0L;
             pthread_mutex_lock(&cache_mutex);
