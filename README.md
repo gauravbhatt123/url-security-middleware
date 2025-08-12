@@ -1,4 +1,4 @@
-# 🚀 ThreadGuard Proxy Engine
+# ⛩️ ThreadGuard Proxy Engine
 
 [![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)](https://www.cprogramming.com/)
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
@@ -68,6 +68,7 @@ The security system integrates a **TensorFlow-based CNN-LSTM model** trained on 
 - **Model Architecture**: Convolutional + LSTM layers for pattern recognition
 - **Real-time Classification**: 50-200ms response time for security checks
 - **Accuracy**: 99%+ for known threat patterns
+![Confusion Matrix](url-security-middleware/confusion_matrix.png)
 
 ### **Threat Detection Categories**
 - **Phishing**: Suspicious login forms, credential harvesting
@@ -145,15 +146,15 @@ Main Window (Control Panel)
 
 Separate Windows:
 ├── Logs Monitor (Real-time streaming)
-![](proxy/images/log.png)
 ├── Cache Analytics (Performance metrics)
-![](proxy/images/cache_latency.png)
 ├── Security Dashboard (Threat statistics)
-![](proxy/images/security_pass.png)
 ├── Request Monitor (Live traffic)
-![](proxy/images/request_response_google.com.png)
 └── Latency Graphs (Performance visualization)
 ```
+![Log](proxy/images/log.png)
+![Cache](proxy/images/cache_latency.png)
+![Security](proxy/images/security_pass.png)
+![Latency](proxy/images/request_response_google.com.png)
 
 ### **Real-Time Updates**
 - **Event-driven architecture** using Tkinter's `after()` method
