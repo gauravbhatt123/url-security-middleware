@@ -145,15 +145,15 @@ Main Window (Control Panel)
 
 Separate Windows:
 ├── Logs Monitor (Real-time streaming)
-![](proxy/images/log.png)
 ├── Cache Analytics (Performance metrics)
-![](proxy/images/cache_latency.png)
 ├── Security Dashboard (Threat statistics)
-![](proxy/images/security_pass.png)
 ├── Request Monitor (Live traffic)
-![](proxy/images/request_response_google.com.png)
 └── Latency Graphs (Performance visualization)
 ```
+![Log](proxy/images/log.png)
+![Cache](proxy/images/cache_latency.png)
+![Security](proxy/images/security_pass.png)
+![Latency](proxy/images/request_response_google.com.png)
 
 ### **Real-Time Updates**
 - **Event-driven architecture** using Tkinter's `after()` method
