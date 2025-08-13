@@ -1,77 +1,77 @@
-# main.py
-from url_generator import URLGenerator
+from fastapi import FastAPI, HTTPException, Depends
+from pydantic import BaseModel, HttpUrl
+from sqlalchemy.orm import Session
 from url_validator import validate_url
-from typing import Dict
+from database import SessionLocal, URLLog
 
+app = FastAPI(title="URL Security Analyzer API")
 
-class URLSecurityAnalyzer:
-    def __init__(self):
-        self.generator = URLGenerator()
+# Pydantic models
+class URLRequest(BaseModel):
+    url: HttpUrl
 
-    def print_result(self, result: Dict):
-        print(f"\n🔎 URL: {result['url']}")
-        print(f"→ Score: {result['score']}")
-        print(f"→ Category: {result['category']}")
-        if result["reasons"]:
-            print("⚠️ Reasons:")
-            for reason in result["reasons"]:
-                print(f"  - {reason}")
-        else:
-            print("✅ No issues detected.")
+class URLResponse(BaseModel):
+    url: str
+    score: float
+    category: str
+    reasons: list[str]
+    status: str
 
-    def test_valid_urls(self, count: int = 3):
-        print("\n🟢 Testing VALID URLs:")
-        for _ in range(count):
-            url = self.generator.generate_valid_url()
-            result = validate_url(url)  # ✅ Correct usage
-            self.print_result(result)
+# Dependency to get DB session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-    def test_invalid_urls(self, count: int = 3):
-        print("\n🔴 Testing INVALID URLs:")
-        for _ in range(count):
-            url = self.generator.generate_invalid_url()
-            result = validate_url(url)  # ✅ Correct usage
-            self.print_result(result)
+@app.post("/check-url", response_model=URLResponse)
+def check_url(request: URLRequest, db: Session = Depends(get_db)):
+    result = validate_url(request.url)
 
-    def test_custom_urls(self):
-        print("\n💬 Test your own URLs (press enter to skip):")
-        while True:
-            try:
-                custom_url = input("Enter a URL to test (or press Enter to go back): ").strip()
-                if not custom_url:
-                    break
-                result = validate_url(custom_url)  # ✅ Correct usage
-                self.print_result(result)
-            except KeyboardInterrupt:
-                print("\n⛔ Interrupted by user.")
-                break
-            except Exception as e:
-                print(f"❌ Error: {e}")
+    # Log to database
+    log_entry = URLLog(
+        url=result["url"],
+        score=result["score"],
+        category=result["category"]
+    )
+    log_entry.set_reasons(result["reasons"])
+    db.add(log_entry)
+    db.commit()
 
-    def run(self):
-        print("🚀 URL Security Analyzer")
-        while True:
-            print("\nSelect an option:")
-            print("1. Test generated VALID URLs")
-            print("2. Test generated INVALID URLs")
-            print("3. Test CUSTOM URLs")
-            print("4. Exit")
+    if result["category"] != "SAFE":
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "message": "URL blocked due to potential security threats.",
+                "score": result["score"],
+                "category": result["category"],
+                "reasons": result["reasons"]
+            }
+        )
 
-            choice = input("Enter your choice (1/2/3/4): ").strip()
+    return {
+        "url": result["url"],
+        "score": result["score"],
+        "category": result["category"],
+        "reasons": result["reasons"],
+        "status": "URL is safe and allowed."
+    }
 
-            if choice == "1":
-                self.test_valid_urls()
-            elif choice == "2":
-                self.test_invalid_urls()
-            elif choice == "3":
-                self.test_custom_urls()
-            elif choice == "4":
-                print("👋 Exiting. Stay safe online!")
-                break
-            else:
-                print("❌ Invalid choice. Try again.")
-
+@app.get("/logs", summary="View scanned URL history")
+def get_logs(db: Session = Depends(get_db)):
+    logs = db.query(URLLog).order_by(URLLog.timestamp.desc()).all()
+    return [
+        {
+            "url": log.url,
+            "score": log.score,
+            "category": log.category,
+            "reasons": log.get_reasons(),
+            "timestamp": log.timestamp
+        }
+        for log in logs
+    ]
 
 if __name__ == "__main__":
-    analyzer = URLSecurityAnalyzer()
-    analyzer.run()
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
